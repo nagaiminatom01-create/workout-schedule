@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>FitSchedule — 筋トレスケジュール</title>
+  <title>レンジャーズ筋トレ組 — 筋トレスケジュール</title>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -533,9 +533,6 @@
     }
 
     .day-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
@@ -567,31 +564,224 @@
       box-shadow: 0 4px 16px rgba(108, 92, 231, 0.45);
     }
 
-    .day-row__select-wrap { flex: 1; min-width: 0; }
+    .day-row__top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    .day-row__select {
-      width: 100%;
-      appearance: none;
-      -webkit-appearance: none;
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 44px 16px 16px;
-      font-size: 16px;
-      font-weight: 600;
+    .day-row__parts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .part-chip {
+      position: relative;
       cursor: pointer;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b8b9e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      min-height: 56px;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    .day-row__select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
+    .part-chip input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
     }
+
+    .part-chip__box {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 11px 14px;
+      min-height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.1s;
+    }
+
+    .part-chip:active .part-chip__box { transform: scale(0.96); }
+
+    .part-chip input:checked + .part-chip__box {
+      color: var(--text);
+      border-color: rgba(108, 92, 231, 0.55);
+      background: linear-gradient(145deg, rgba(108, 92, 231, 0.22), rgba(0, 206, 201, 0.1));
+      box-shadow: 0 2px 10px rgba(108, 92, 231, 0.2);
+    }
+
+    .part-chip--rest input:checked + .part-chip__box {
+      border-color: rgba(139, 139, 158, 0.5);
+      background: rgba(139, 139, 158, 0.12);
+      box-shadow: none;
+    }
+
+    /* ── Today: part groups ── */
+    .part-group { margin-bottom: 6px; }
+
+    .part-group__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent-2);
+      margin: 18px 0 12px;
+      padding: 12px 14px;
+      background: linear-gradient(90deg, rgba(108, 92, 231, 0.14), transparent);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .part-group:first-child .part-group__head { margin-top: 0; }
+
+    .part-group__list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .today-empty {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ── End training button ── */
+    .end-btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 16px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(253, 121, 168, 0.35);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 52px;
+      transition: background 0.2s, border-color 0.2s, transform 0.12s, color 0.2s;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .end-btn:active {
+      transform: scale(0.98);
+      background: rgba(253, 121, 168, 0.08);
+      border-color: rgba(253, 121, 168, 0.55);
+      color: var(--text);
+    }
+
+    .end-btn-wrap {
+      margin-top: 20px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Finish confirm modal ── */
+    .finish-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 190;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.68);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .finish-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .finish-modal {
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(160deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transform: scale(0.92);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .finish-overlay.is-visible .finish-modal {
+      transform: scale(1);
+    }
+
+    .finish-modal__icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .finish-modal__text {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .finish-modal__pct {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-2);
+      margin: 8px 0 4px;
+    }
+
+    .finish-modal__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .finish-modal__confirm {
+      width: 100%;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 52px;
+      background: linear-gradient(135deg, #06c755, #05a847);
+      box-shadow: 0 6px 18px rgba(6, 199, 85, 0.35);
+    }
+
+    .finish-modal__confirm:active { transform: scale(0.97); }
+
+    .finish-modal__cancel {
+      width: 100%;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .finish-modal__cancel:active { background: rgba(255, 255, 255, 0.04); }
 
     .save-btn {
       width: 100%;
@@ -941,6 +1131,49 @@
       text-align: center;
     }
 
+    .complete-modal__share-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .complete-modal__share-row .share-btn {
+      font-size: 13px;
+      padding: 14px 10px;
+      min-height: 58px;
+    }
+
+    .complete-modal__share-row .share-btn__text {
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .line-btn {
+      background: #06c755;
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 4px 18px rgba(6, 199, 85, 0.35);
+    }
+
+    .line-btn::before {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.1));
+    }
+
+    .line-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .line-btn__icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
     .confetti {
       position: fixed;
       inset: 0;
@@ -968,9 +1201,9 @@
 <body>
   <div class="app">
     <header class="header">
-      <div class="header__badge"><span>💪</span> MVP Trial</div>
-      <h1 class="header__title">FitSchedule</h1>
-      <p class="header__subtitle">重量・回数まで記録できる筋トレ管理</p>
+      <div class="header__badge"><span>💪</span> Rangers Community</div>
+      <h1 class="header__title">レンジャーズ筋トレ組</h1>
+      <p class="header__subtitle">仲間と一緒に追い込む、筋トレスケジュール管理</p>
     </header>
 
     <section id="panel-today" class="panel is-active" aria-label="今日のトレーニング">
@@ -978,7 +1211,7 @@
     </section>
 
     <section id="panel-schedule" class="panel" aria-label="週間スケジュール">
-      <p class="schedule-intro">各曜日に鍛える部位を選んで「保存」してください。重量・回数の記録は端末のブラウザに自動保存されます。</p>
+      <p class="schedule-intro">各曜日に鍛える部位を<strong>複数選択</strong>できます（例：胸＋腕）。選んだあと「保存」してください。記録は端末のブラウザに自動保存されます。</p>
       <p class="section-title">週間スケジュール</p>
       <div id="schedule-list" class="day-list"></div>
       <button type="button" class="save-btn" id="save-schedule">スケジュールを保存</button>
@@ -1001,6 +1234,20 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <!-- 終了確認モーダル -->
+  <div class="finish-overlay" id="finish-overlay" aria-hidden="true" role="dialog">
+    <div class="finish-modal">
+      <div class="finish-modal__icon">💪</div>
+      <p class="finish-modal__text">お疲れ様でした！<br>今日の達成率は</p>
+      <div class="finish-modal__pct" id="finish-modal-pct">0%</div>
+      <p class="finish-modal__text" style="margin-top:0;margin-bottom:20px">です。LINEでメンバーに報告しますか？</p>
+      <div class="finish-modal__actions">
+        <button type="button" class="finish-modal__confirm" id="finish-confirm">報告する</button>
+        <button type="button" class="finish-modal__cancel" id="finish-cancel">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
   <!-- コンプリート演出モーダル -->
   <div class="confetti" id="confetti" aria-hidden="true"></div>
   <div class="complete-overlay" id="complete-overlay" aria-hidden="true" role="dialog" aria-labelledby="complete-title">
@@ -1015,10 +1262,16 @@
         </div>
       </div>
       <div class="complete-modal__actions">
-        <button type="button" class="share-btn" id="share-x-modal" data-action="share">
-          <svg class="share-btn__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          <span class="share-btn__text">Xで成果をシェア</span>
-        </button>
+        <div class="complete-modal__share-row">
+          <button type="button" class="share-btn" id="share-x-modal" data-action="share">
+            <svg class="share-btn__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span class="share-btn__text">Xで成果をシェア</span>
+          </button>
+          <button type="button" class="share-btn line-btn" id="share-line-modal" data-action="line-share">
+            <span class="line-btn__icon" aria-hidden="true">L</span>
+            <span class="share-btn__text">LINEグループに報告</span>
+          </button>
+        </div>
         <button type="button" class="complete-modal__close" id="complete-close">閉じる</button>
       </div>
     </div>
@@ -1097,9 +1350,11 @@
         rest: []
       };
 
+      var PART_ORDER = ["chest", "back", "legs", "shoulders", "arms", "core", "rest"];
+
       var DEFAULT_SCHEDULE = {
-        mon: "chest", tue: "back", wed: "legs", thu: "shoulders",
-        fri: "arms", sat: "core", sun: "rest"
+        mon: ["chest"], tue: ["back"], wed: ["legs"], thu: ["shoulders"],
+        fri: ["arms"], sat: ["core"], sun: ["rest"]
       };
 
       /* ── State ── */
@@ -1117,13 +1372,34 @@
       }
 
       /* ── Persistence ── */
+      function normalizeDayParts(value, fallback) {
+        if (Array.isArray(value)) {
+          return value.filter(function (p) { return PARTS[p]; });
+        }
+        if (typeof value === "string" && value) {
+          return [value];
+        }
+        if (Array.isArray(fallback)) return fallback.slice();
+        if (typeof fallback === "string" && fallback) return [fallback];
+        return ["rest"];
+      }
+
+      function normalizeSchedule(rawSchedule) {
+        var schedule = {};
+        DAYS.forEach(function (day) {
+          var def = DEFAULT_SCHEDULE[day.key];
+          schedule[day.key] = normalizeDayParts(rawSchedule[day.key], def);
+        });
+        return schedule;
+      }
+
       function loadData() {
         try {
           var raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
             var parsed = JSON.parse(raw);
             return {
-              schedule: Object.assign({}, DEFAULT_SCHEDULE, parsed.schedule || {}),
+              schedule: normalizeSchedule(parsed.schedule || {}),
               logs: parsed.logs || {}
             };
           }
@@ -1131,12 +1407,12 @@
           if (legacy) {
             var old = JSON.parse(legacy);
             return {
-              schedule: Object.assign({}, DEFAULT_SCHEDULE, old.schedule || {}),
+              schedule: normalizeSchedule(old.schedule || {}),
               logs: {}
             };
           }
         } catch (e) { /* ignore */ }
-        return { schedule: Object.assign({}, DEFAULT_SCHEDULE), logs: {} };
+        return { schedule: normalizeSchedule({}), logs: {} };
       }
 
       function saveData() {
@@ -1179,13 +1455,44 @@
           '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>' +
         '</svg>';
 
-      function getTodayPartName() {
-        var partKey = state.schedule[getTodayDayKey()] || "rest";
-        return PARTS[partKey] ? PARTS[partKey].name : "トレーニング";
+      function getDayParts(dayKey) {
+        var parts = normalizeDayParts(state.schedule[dayKey], ["rest"]);
+        var workout = parts.filter(function (p) { return p !== "rest"; });
+        if (workout.length) return workout;
+        if (parts.indexOf("rest") >= 0) return ["rest"];
+        return [];
+      }
+
+      function getExercisesForParts(partKeys) {
+        var list = [];
+        PART_ORDER.forEach(function (pk) {
+          if (pk === "rest") return;
+          if (partKeys.indexOf(pk) < 0) return;
+          (EXERCISES[pk] || []).forEach(function (ex) {
+            list.push(ex);
+          });
+        });
+        return list;
+      }
+
+      function getTodayPartNames() {
+        var parts = getDayParts(getTodayDayKey());
+        if (parts.length === 1 && parts[0] === "rest") return "休み";
+        return parts.map(function (p) { return PARTS[p].name; }).join("・");
+      }
+
+      function getTodayPartLabel() {
+        var parts = getDayParts(getTodayDayKey());
+        if (parts.length === 1 && parts[0] === "rest") {
+          return { emoji: PARTS.rest.emoji, label: PARTS.rest.name + "の日" };
+        }
+        var names = parts.map(function (p) { return PARTS[p].name; }).join("・");
+        var emoji = parts.length > 1 ? "💪" : PARTS[parts[0]].emoji;
+        return { emoji: emoji, label: names + "の日" };
       }
 
       function buildShareText() {
-        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartName() + " を追い込みました。 #FitSchedule #筋トレ";
+        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #レンジャーズ筋トレ組 #筋トレ";
       }
 
       function shareToX() {
@@ -1203,6 +1510,94 @@
             '<span class="share-btn__text">Xで成果をシェア</span>' +
           '</button>'
         );
+      }
+
+      /* ── Progress & LINE Share ── */
+      function getProgressPercent() {
+        var progress = getTodayProgress();
+        if (!progress.exercises.length) return 0;
+        return Math.round((progress.doneCount / progress.exercises.length) * 100);
+      }
+
+      function getCompletedPartNames() {
+        var partKeys = getDayParts(getTodayDayKey());
+        var names = [];
+        partKeys.forEach(function (pk) {
+          if (pk === "rest") return;
+          var exercises = EXERCISES[pk] || [];
+          var anyDone = false;
+          for (var i = 0; i < exercises.length; i++) {
+            if (isExerciseComplete(exercises[i].id)) {
+              anyDone = true;
+              break;
+            }
+          }
+          if (anyDone) names.push(PARTS[pk].name);
+        });
+        return names.join("・");
+      }
+
+      function buildLineMessage() {
+        var pct = getProgressPercent();
+        var partNames = getTodayPartNames();
+        var workedParts = getCompletedPartNames();
+
+        if (pct >= 100) {
+          return (
+            "【レンジャーズ筋トレ組】\n" +
+            "今日の筋トレを100%コンプリート！完全勝利です🔥\n" +
+            "クリア部位：" + partNames + "\n" +
+            "みんなも負けずに追い込もう！"
+          );
+        }
+        if (pct >= 70) {
+          return (
+            "【レンジャーズ筋トレ組】\n" +
+            "今日の筋トレは " + pct + "% 達成！ガッツリ追い込みました💪\n" +
+            "クリア部位：" + partNames + "\n" +
+            "次は100%目指してまた頑張ります！"
+          );
+        }
+        if (pct >= 1) {
+          return (
+            "【レンジャーズ筋トレ組】\n" +
+            "今日の筋トレは " + pct + "% で終了！少しでも動いた自分を褒める。\n" +
+            "やった部位：" + (workedParts || partNames) + "\n" +
+            "チリツモ精神で次また爆発させます🔥"
+          );
+        }
+        return (
+          "【レンジャーズ筋トレ組】\n" +
+          "今日はリフレッシュ（またはこれから参戦）！\n" +
+          "次回、レンジャーズの牙を剥きます。"
+        );
+      }
+
+      function shareToLine() {
+        var url = "https://line.me/R/share?text=" + encodeURIComponent(buildLineMessage());
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+
+      function renderEndButton() {
+        return (
+          '<div class="end-btn-wrap">' +
+            '<button type="button" class="end-btn" data-action="finish-day">今日の筋トレを終了する</button>' +
+          '</div>'
+        );
+      }
+
+      function showFinishConfirmDialog() {
+        var pct = getProgressPercent();
+        document.getElementById("finish-modal-pct").textContent = pct + "%";
+        var overlay = document.getElementById("finish-overlay");
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+      }
+
+      function hideFinishConfirmDialog() {
+        var overlay = document.getElementById("finish-overlay");
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
       }
 
       /* ── Log helpers ── */
@@ -1451,28 +1846,39 @@
 
       function renderToday() {
         var container = document.getElementById("today-content");
-        var partKey = state.schedule[getTodayDayKey()] || "rest";
-        var part = PARTS[partKey];
-        var exercises = EXERCISES[partKey] || [];
+        var dayKey = getTodayDayKey();
+        var partKeys = getDayParts(dayKey);
+        var partInfo = getTodayPartLabel();
 
-        if (partKey === "rest" || !exercises.length) {
+        if (partKeys.length === 1 && partKeys[0] === "rest") {
           wasAllComplete = false;
           container.innerHTML =
             '<div class="rest-card">' +
-              '<div class="rest-card__icon">' + part.emoji + '</div>' +
-              '<h2 class="rest-card__title">' + getDayLabelFull() + ' — ' + part.name + '</h2>' +
+              '<div class="rest-card__icon">' + PARTS.rest.emoji + '</div>' +
+              '<h2 class="rest-card__title">' + getDayLabelFull() + ' — ' + PARTS.rest.name + '</h2>' +
               '<p class="rest-card__text">今日は休息日です。<br>十分な睡眠と栄養で、明日のトレーニングに備えましょう。</p>' +
             '</div>' +
+            renderEndButton() +
             renderBannerAd();
           return;
         }
 
+        if (!partKeys.length) {
+          wasAllComplete = false;
+          container.innerHTML =
+            '<div class="today-empty">今日の部位が未設定です。<br>「スケジュール」タブで部位を選んで保存してください。</div>' +
+            renderEndButton() +
+            renderBannerAd();
+          return;
+        }
+
+        var exercises = getExercisesForParts(partKeys);
         var doneCount = 0;
         exercises.forEach(function (ex) {
           if (isExerciseComplete(ex.id)) doneCount++;
         });
-        var pct = Math.round((doneCount / exercises.length) * 100);
-        var allComplete = doneCount === exercises.length;
+        var pct = exercises.length ? Math.round((doneCount / exercises.length) * 100) : 0;
+        var allComplete = exercises.length > 0 && doneCount === exercises.length;
 
         var shareBlock = allComplete
           ? '<div class="today-share">' +
@@ -1484,15 +1890,25 @@
         var html =
           '<div class="today-card">' +
             '<div class="today-card__day">' + getDayLabelFull() + '</div>' +
-            '<div class="today-card__part">' + part.emoji + ' ' + part.name + 'の日</div>' +
+            '<div class="today-card__part">' + partInfo.emoji + ' ' + partInfo.label + '</div>' +
             '<div class="progress-label"><span>進捗</span><span id="progress-text">' + doneCount + ' / ' + exercises.length + ' 完了</span></div>' +
             '<div class="progress-bar"><div class="progress-bar__fill" id="progress-fill" style="width:' + pct + '%"></div></div>' +
             shareBlock +
+            renderEndButton() +
           '</div>' +
           '<p class="section-title">今日のメニュー</p>' +
           '<div class="checklist" id="checklist">';
 
-        exercises.forEach(function (ex) { html += renderExerciseCard(ex); });
+        partKeys.forEach(function (pk) {
+          var partExercises = EXERCISES[pk] || [];
+          if (!partExercises.length) return;
+          html += '<div class="part-group">';
+          html += '<div class="part-group__head">' + PARTS[pk].emoji + ' ' + PARTS[pk].name + '</div>';
+          html += '<div class="part-group__list">';
+          partExercises.forEach(function (ex) { html += renderExerciseCard(ex); });
+          html += '</div></div>';
+        });
+
         html += '</div>' + renderBannerAd();
         container.innerHTML = html;
 
@@ -1505,9 +1921,12 @@
 
       /* ── Completion celebration ── */
       function getTodayProgress() {
-        var partKey = state.schedule[getTodayDayKey()] || "rest";
-        var exercises = EXERCISES[partKey] || [];
-        if (partKey === "rest" || !exercises.length) {
+        var partKeys = getDayParts(getTodayDayKey());
+        if (partKeys.length === 1 && partKeys[0] === "rest") {
+          return { exercises: [], doneCount: 0, allComplete: false };
+        }
+        var exercises = getExercisesForParts(partKeys);
+        if (!exercises.length) {
           return { exercises: [], doneCount: 0, allComplete: false };
         }
         var doneCount = 0;
@@ -1578,19 +1997,74 @@
         var html = "";
 
         DAYS.forEach(function (day) {
-          var selected = state.schedule[day.key] || "rest";
+          var selectedParts = getDayParts(day.key);
           var isToday = day.key === todayDayKey;
           html += '<div class="day-row' + (isToday ? " is-today" : "") + '">';
+          html += '<div class="day-row__top">';
           html += '<div class="day-row__label">' + day.label + '</div>';
-          html += '<div class="day-row__select-wrap"><select class="day-row__select" data-day="' + day.key + '">';
-          Object.keys(PARTS).forEach(function (key) {
-            html += '<option value="' + key + '"' + (key === selected ? " selected" : "") + '>' +
-              PARTS[key].emoji + " " + PARTS[key].name + '</option>';
+          html += '<span style="font-size:12px;color:var(--text-muted);font-weight:600;">複数選択可</span>';
+          html += '</div>';
+          html += '<div class="day-row__parts">';
+
+          PART_ORDER.forEach(function (key) {
+            var checked = selectedParts.indexOf(key) >= 0;
+            var restCls = key === "rest" ? " part-chip--rest" : "";
+            html +=
+              '<label class="part-chip' + restCls + '">' +
+                '<input type="checkbox" data-day="' + day.key + '" data-part="' + key + '"' +
+                  (checked ? " checked" : "") + '>' +
+                '<span class="part-chip__box">' + PARTS[key].emoji + ' ' + PARTS[key].name + '</span>' +
+              '</label>';
           });
-          html += '</select></div></div>';
+
+          html += '</div></div>';
         });
 
         list.innerHTML = html;
+      }
+
+      function handlePartCheckboxChange(checkbox) {
+        var day = checkbox.getAttribute("data-day");
+        var part = checkbox.getAttribute("data-part");
+        var row = checkbox.closest(".day-row");
+        if (!row) return;
+
+        var allChecks = row.querySelectorAll('input[type="checkbox"]');
+
+        if (part === "rest" && checkbox.checked) {
+          allChecks.forEach(function (cb) {
+            if (cb.getAttribute("data-part") !== "rest") cb.checked = false;
+          });
+        } else if (part !== "rest" && checkbox.checked) {
+          allChecks.forEach(function (cb) {
+            if (cb.getAttribute("data-part") === "rest") cb.checked = false;
+          });
+        }
+
+        var anyWorkout = false;
+        allChecks.forEach(function (cb) {
+          if (cb.checked && cb.getAttribute("data-part") !== "rest") anyWorkout = true;
+        });
+
+        if (!anyWorkout) {
+          allChecks.forEach(function (cb) {
+            if (cb.getAttribute("data-part") === "rest") cb.checked = true;
+          });
+        }
+      }
+
+      function collectScheduleFromUI() {
+        DAYS.forEach(function (day) {
+          var row = document.querySelector('.day-row input[data-day="' + day.key + '"]');
+          if (!row) return;
+          var dayRow = row.closest(".day-row");
+          var parts = [];
+          dayRow.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+            parts.push(cb.getAttribute("data-part"));
+          });
+          var workout = parts.filter(function (p) { return p !== "rest"; });
+          state.schedule[day.key] = workout.length ? workout : ["rest"];
+        });
       }
 
       function switchTab(tab) {
@@ -1613,7 +2087,7 @@
 
         var action = target.getAttribute("data-action");
         var exerciseId = target.getAttribute("data-ex");
-        if (!exerciseId && action !== "toggle" && action !== "share") return;
+        if (!exerciseId && action !== "toggle" && action !== "share" && action !== "finish-day") return;
 
         if (action === "toggle") {
           toggleExpand(target.getAttribute("data-ex"));
@@ -1622,6 +2096,11 @@
 
         if (action === "share") {
           shareToX();
+          return;
+        }
+
+        if (action === "finish-day") {
+          showFinishConfirmDialog();
           return;
         }
 
@@ -1653,10 +2132,15 @@
         });
       });
 
+      document.getElementById("schedule-list").addEventListener("change", function (e) {
+        var cb = e.target;
+        if (cb && cb.matches('input[type="checkbox"][data-day]')) {
+          handlePartCheckboxChange(cb);
+        }
+      });
+
       document.getElementById("save-schedule").addEventListener("click", function () {
-        document.querySelectorAll(".day-row__select").forEach(function (sel) {
-          state.schedule[sel.getAttribute("data-day")] = sel.value;
-        });
+        collectScheduleFromUI();
         saveData();
         renderToday();
         var btn = document.getElementById("save-schedule");
@@ -1686,8 +2170,18 @@
 
       document.getElementById("complete-close").addEventListener("click", hideCompleteModal);
       document.getElementById("share-x-modal").addEventListener("click", shareToX);
+      document.getElementById("share-line-modal").addEventListener("click", shareToLine);
       document.getElementById("complete-overlay").addEventListener("click", function (e) {
         if (e.target === document.getElementById("complete-overlay")) hideCompleteModal();
+      });
+
+      document.getElementById("finish-confirm").addEventListener("click", function () {
+        hideFinishConfirmDialog();
+        shareToLine();
+      });
+      document.getElementById("finish-cancel").addEventListener("click", hideFinishConfirmDialog);
+      document.getElementById("finish-overlay").addEventListener("click", function (e) {
+        if (e.target === document.getElementById("finish-overlay")) hideFinishConfirmDialog();
       });
 
       /* ── Init ── */
