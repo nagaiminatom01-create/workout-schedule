@@ -8,6 +8,7 @@ import {
   MINIMAP_HEIGHT,
   MINIMAP_MARGIN,
   MINIMAP_WIDTH,
+  RGB,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   STAMINA_BAR_HEIGHT,
@@ -40,7 +41,7 @@ export function drawMaze(ctx: CanvasRenderingContext2D, mapData: MapData): void 
 
 export function drawPlayer(ctx: CanvasRenderingContext2D, player: Player): void {
   const { rect } = player;
-  const color = player.isDashing ? [120, 210, 255] : player.color;
+  const color: RGB = player.isDashing ? [120, 210, 255] : player.color;
   roundRect(ctx, rect.x, rect.y, rect.width, rect.height, 4, rgb(color));
   const inner = rect.inflate(-8, -8);
   roundRect(ctx, inner.x, inner.y, inner.width, inner.height, 2, rgb([200, 230, 255]));
