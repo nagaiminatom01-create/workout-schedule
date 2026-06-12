@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>%Fit — パーセントフィット</title>
+  <title>REP SHARE — 達成率で繋がる筋トレ管理</title>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -113,24 +113,26 @@
     }
 
     .header__title {
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.15;
+      font-style: italic;
     }
 
-    .header__title-pct {
-      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    .header__logo-rep {
+      color: #fff;
+      text-shadow: 0 0 18px rgba(0, 206, 201, 0.35);
+    }
+
+    .header__logo-share {
+      margin-left: 8px;
+      background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent) 55%, #fd79a8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-    }
-
-    .header__title-fit {
-      background: linear-gradient(135deg, #fff 30%, #dfe6e9);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      filter: drop-shadow(0 0 12px rgba(0, 206, 201, 0.35));
     }
 
     .header__subtitle {
@@ -1469,12 +1471,20 @@
     }
 
     .onboard-modal__logo {
-      font-size: 36px;
-      font-weight: 800;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-style: italic;
       margin-bottom: 8px;
     }
 
-    .onboard-modal__logo-pct {
+    .onboard-modal__logo-rep {
+      color: #fff;
+    }
+
+    .onboard-modal__logo-share {
+      margin-left: 6px;
       background: linear-gradient(135deg, var(--accent-2), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -1534,11 +1544,11 @@
   <div class="app">
     <header class="header">
       <div class="header__top">
-        <div class="header__badge"><span>📊</span> Percent Fit</div>
+        <div class="header__badge"><span>🔥</span> REP · SHARE</div>
         <button type="button" class="header__edit" id="edit-group-name" aria-label="グループ名を編集">✏️</button>
       </div>
-      <h1 class="header__title"><span class="header__title-pct">%</span><span class="header__title-fit">Fit</span></h1>
-      <p class="header__subtitle">パーセントフィット — 達成率で記録する筋トレ管理</p>
+      <h1 class="header__title"><span class="header__logo-rep">REP</span><span class="header__logo-share">SHARE</span></h1>
+      <p class="header__subtitle">達成率で記録・共有する筋トレ管理アプリ</p>
       <p class="header__group" id="header-group-name" hidden></p>
     </header>
 
@@ -1602,8 +1612,8 @@
   <!-- 初回設定 / 名前編集モーダル -->
   <div class="onboard-overlay" id="onboard-overlay" aria-hidden="true" role="dialog">
     <div class="onboard-modal">
-      <div class="onboard-modal__logo"><span class="onboard-modal__logo-pct">%</span>Fit</div>
-      <h2 class="onboard-modal__title" id="onboard-modal-title">ようこそ %Fit へ</h2>
+      <div class="onboard-modal__logo"><span class="onboard-modal__logo-rep">REP</span><span class="onboard-modal__logo-share">SHARE</span></div>
+      <h2 class="onboard-modal__title" id="onboard-modal-title">ようこそ REP SHARE へ</h2>
       <p class="onboard-modal__desc">グループ名または個人名を入力してください。<br>LINEシェアのヘッダーにも使われます。</p>
       <input type="text" class="onboard-modal__input" id="group-name-input" placeholder="例：〇〇筋トレ組 / たろう" maxlength="30" autocomplete="off">
       <button type="button" class="onboard-modal__save" id="group-name-save">はじめる</button>
@@ -1834,7 +1844,7 @@
       }
 
       function getSharePrefix() {
-        return "【" + (getGroupName() || "%Fit") + "】";
+        return "【" + (getGroupName() || "REP SHARE") + "】";
       }
 
       function showNameModal(isFirstLaunch) {
@@ -1842,7 +1852,7 @@
         var title = document.getElementById("onboard-modal-title");
         var btn = document.getElementById("group-name-save");
         var input = document.getElementById("group-name-input");
-        if (title) title.textContent = isFirstLaunch ? "ようこそ %Fit へ" : "名前を編集";
+        if (title) title.textContent = isFirstLaunch ? "ようこそ REP SHARE へ" : "名前を編集";
         if (btn) btn.textContent = isFirstLaunch ? "はじめる" : "保存する";
         if (input) input.value = getGroupName();
         overlay.classList.add("is-visible");
@@ -1978,7 +1988,7 @@
       }
 
       function buildShareText() {
-        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #PercentFit #筋トレ";
+        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #REPSHARE #筋トレ";
       }
 
       function shareToX() {
