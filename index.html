@@ -62,7 +62,7 @@
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: calc(12px + var(--safe-top)) 16px calc(92px + var(--safe-bottom)) 16px;
+      padding: calc(12px + var(--safe-top)) 16px calc(108px + var(--safe-bottom)) 16px;
     }
 
     .header { margin-bottom: 24px; }
@@ -1254,41 +1254,171 @@
       margin-bottom: 14px;
     }
 
-    /* ── Ad placeholders ── */
+    /* ── Ad placeholders (将来 AdSense / バナー画像に差し替え) ── */
+    .ad-banner-wrap {
+      margin-top: 28px;
+      margin-bottom: calc(8px + var(--safe-bottom));
+    }
+
     .ad-slot {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed rgba(255, 255, 255, 0.14);
-      border-radius: var(--radius-sm);
+      background: #1e293b;
+      border: 1px solid rgba(0, 206, 201, 0.28);
+      border-radius: 8px;
       overflow: hidden;
+      box-shadow:
+        0 0 18px rgba(0, 206, 201, 0.1),
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 0 32px rgba(108, 92, 231, 0.07);
     }
 
-    .ad-slot__label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+    .ad-slot::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(108, 92, 231, 0.14) 0%,
+        transparent 42%,
+        rgba(0, 206, 201, 0.1) 100%
+      );
+      pointer-events: none;
+    }
+
+    .ad-slot__badge {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      z-index: 1;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(139, 139, 158, 0.45);
+      color: rgba(0, 206, 201, 0.55);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .ad-slot__inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 22px 16px 14px;
+      width: 100%;
+    }
+
+    .ad-slot__tagline {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.45);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .ad-slot__hint {
+      font-size: 11px;
+      color: rgba(148, 163, 184, 0.32);
+      letter-spacing: 0.04em;
       pointer-events: none;
       user-select: none;
     }
 
     .ad-slot--banner {
       width: 100%;
-      min-height: 64px;
-      margin-top: 28px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.05));
+      min-height: 72px;
     }
 
     .ad-slot--rectangle {
       width: 100%;
       max-width: 300px;
-      min-height: 250px;
+      min-height: 118px;
       margin: 0 auto;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.06));
+    }
+
+    .ad-slot--affiliate {
+      border-color: rgba(255, 183, 77, 0.32);
+      box-shadow:
+        0 0 22px rgba(255, 183, 77, 0.12),
+        0 0 36px rgba(253, 121, 168, 0.08),
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 0 28px rgba(255, 183, 77, 0.06);
+    }
+
+    .ad-slot--affiliate::before {
+      background: linear-gradient(
+        145deg,
+        rgba(255, 183, 77, 0.12) 0%,
+        transparent 40%,
+        rgba(253, 121, 168, 0.1) 100%
+      );
+    }
+
+    .ad-slot--affiliate .ad-slot__badge {
+      color: rgba(255, 183, 77, 0.65);
+    }
+
+    .ad-slot__link {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 118px;
+      padding: 26px 18px 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+    }
+
+    .ad-slot__link:active {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .ad-slot__link-emoji {
+      font-size: 22px;
+      line-height: 1;
+      filter: drop-shadow(0 0 10px rgba(255, 183, 77, 0.35));
+    }
+
+    .ad-slot__link-title {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      text-align: center;
+      background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 45%, #fd79a8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ad-slot__link-desc {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(148, 163, 184, 0.72);
+      letter-spacing: 0.03em;
+    }
+
+    .ad-slot__link-arrow {
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(0, 206, 201, 0.7);
     }
 
     /* ── Complete celebration modal ── */
@@ -1387,7 +1517,7 @@
 
     .complete-modal__ad-wrap {
       animation: fadeSlideUp 0.5s ease 0.45s both;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .complete-modal__actions {
@@ -1548,7 +1678,9 @@
     }
 
     /* ── Calendar ── */
-    .cal-panel { padding-bottom: 8px; }
+    .cal-panel { padding-bottom: calc(12px + var(--safe-bottom)); }
+
+    #panel-schedule { padding-bottom: calc(8px + var(--safe-bottom)); }
 
     .cal-header {
       display: flex;
@@ -1966,9 +2098,17 @@
       <h2 class="complete-modal__title" id="complete-title">本日のトレーニング完了！<br>お疲れ様でした！🔥</h2>
       <p class="complete-modal__sub">すべての種目をクリアしました。素晴らしい一日です！</p>
       <div class="complete-modal__ad-wrap">
-        <!-- ADSENSE AREA -->
-        <div class="ad-slot ad-slot--rectangle" id="ad-modal-rectangle">
-          <span class="ad-slot__label">Sponsored</span>
+        <!-- 将来ここにAdSenseコードを貼り付け: <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX"></ins> -->
+        <!-- 将来ここにバナー画像に差し替え: <img src="affiliate-banner.png" alt="おすすめプロテイン"> -->
+        <div class="ad-slot ad-slot--rectangle ad-slot--affiliate" id="ad-modal-rectangle">
+          <span class="ad-slot__badge">RECOMMEND</span>
+          <!-- アフィリエイトURL差し替え: href="#" を Amazon / マイプロテイン等のURLに変更 -->
+          <a class="ad-slot__link" href="#" target="_blank" rel="noopener noreferrer sponsored">
+            <span class="ad-slot__link-emoji" aria-hidden="true">🥤</span>
+            <span class="ad-slot__link-title">モチベーションを高める<br>おすすめプロテイン</span>
+            <span class="ad-slot__link-desc">トレーニング後のリカバリーに。今すぐチェック</span>
+            <span class="ad-slot__link-arrow">VIEW DETAILS →</span>
+          </a>
         </div>
       </div>
       <div class="complete-modal__actions">
@@ -3107,9 +3247,16 @@
 
       function renderBannerAd() {
         return (
-          '<!-- ADSENSE AREA -->' +
-          '<div class="ad-slot ad-slot--banner" id="ad-today-banner">' +
-            '<span class="ad-slot__label">Sponsored</span>' +
+          '<div class="ad-banner-wrap">' +
+            '<!-- 将来ここにAdSenseコードを貼り付け: <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX"></ins> -->' +
+            '<!-- 将来ここにバナー画像に差し替え: <img src="banner-ad.png" alt="スポンサー"> -->' +
+            '<div class="ad-slot ad-slot--banner" id="ad-today-banner">' +
+              '<span class="ad-slot__badge">SPONSORED</span>' +
+              '<div class="ad-slot__inner">' +
+                '<span class="ad-slot__tagline">RECOMMEND</span>' +
+                '<span class="ad-slot__hint">Ad · Affiliate · Banner</span>' +
+              '</div>' +
+            '</div>' +
           '</div>'
         );
       }
