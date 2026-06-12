@@ -67,12 +67,45 @@
 
     .header { margin-bottom: 24px; }
 
-    .header__top {
+    .header__brand-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 10px;
+    }
+
+    .header__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .header__logo-img {
+      height: 38px;
+      width: auto;
+      max-width: 44px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      object-fit: contain;
+      display: none;
+      border: 1px solid rgba(0, 206, 201, 0.22);
+      box-shadow:
+        0 0 14px rgba(0, 206, 201, 0.18),
+        0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .header__logo-img.is-visible {
+      display: block;
+    }
+
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
     .header__edit {
@@ -99,26 +132,38 @@
     .header__badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
+      gap: 4px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--accent-2);
       background: rgba(0, 206, 201, 0.12);
       border: 1px solid rgba(0, 206, 201, 0.25);
-      padding: 4px 10px;
+      padding: 5px 8px;
       border-radius: 999px;
-      margin-bottom: 10px;
+      white-space: nowrap;
     }
 
     .header__title {
-      font-size: 28px;
+      font-size: 22px;
       font-weight: 900;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       line-height: 1.15;
       font-style: italic;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 380px) {
+      .header__brand-row { gap: 6px; }
+      .header__logo-img { height: 32px; max-width: 36px; border-radius: 6px; }
+      .header__title { font-size: 16px; letter-spacing: 0.08em; }
+      .header__brand { gap: 8px; }
+      .header__logo-share { margin-left: 6px; }
+      .header__edit { width: 36px; height: 36px; font-size: 15px; }
+      .header__badge { display: none; }
     }
 
     .header__logo-rep {
@@ -1543,11 +1588,27 @@
 <body>
   <div class="app">
     <header class="header">
-      <div class="header__top">
-        <div class="header__badge"><span>🔥</span> REP · SHARE</div>
-        <button type="button" class="header__edit" id="edit-group-name" aria-label="グループ名を編集">✏️</button>
+      <div class="header__brand-row">
+        <div class="header__brand">
+          <img
+            class="header__logo-img"
+            id="header-logo-img"
+            src="logo.png"
+            alt="REP SHARE ロゴ"
+            width="38"
+            height="38"
+            decoding="async"
+            loading="eager"
+          >
+          <h1 class="header__title" id="header-text-logo">
+            <span class="header__logo-rep">REP</span><span class="header__logo-share">SHARE</span>
+          </h1>
+        </div>
+        <div class="header__actions">
+          <div class="header__badge"><span>🔥</span> REP · SHARE</div>
+          <button type="button" class="header__edit" id="edit-group-name" aria-label="グループ名を編集">✏️</button>
+        </div>
       </div>
-      <h1 class="header__title"><span class="header__logo-rep">REP</span><span class="header__logo-share">SHARE</span></h1>
       <p class="header__subtitle">達成率で記録・共有する筋トレ管理アプリ</p>
       <p class="header__group" id="header-group-name" hidden></p>
     </header>
@@ -1840,6 +1901,34 @@
           el.hidden = false;
         } else {
           el.hidden = true;
+        }
+      }
+
+      function initHeaderLogo() {
+        var img = document.getElementById("header-logo-img");
+        var textLogo = document.getElementById("header-text-logo");
+        if (!img || !textLogo) return;
+
+        function showTextFallback() {
+          img.classList.remove("is-visible");
+          img.style.display = "none";
+          img.setAttribute("aria-hidden", "true");
+          textLogo.hidden = false;
+        }
+
+        function showImageLogo() {
+          img.classList.add("is-visible");
+          img.style.display = "block";
+          img.removeAttribute("aria-hidden");
+          textLogo.hidden = false;
+        }
+
+        img.addEventListener("load", showImageLogo);
+        img.addEventListener("error", showTextFallback);
+
+        if (img.complete) {
+          if (img.naturalWidth > 0) showImageLogo();
+          else showTextFallback();
         }
       }
 
@@ -2764,6 +2853,7 @@
       });
 
       /* ── Boot ── */
+      initHeaderLogo();
       if (getGroupName()) {
         bootApp();
       } else {
