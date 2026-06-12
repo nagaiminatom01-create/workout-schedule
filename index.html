@@ -752,6 +752,251 @@
       gap: 12px;
     }
 
+    .ex-add-btn {
+      width: 100%;
+      margin-top: 4px;
+      padding: 13px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-2);
+      background: rgba(0, 206, 201, 0.08);
+      border: 1px dashed rgba(0, 206, 201, 0.35);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, border-color 0.2s, transform 0.12s;
+    }
+
+    .ex-add-btn:active {
+      transform: scale(0.98);
+      background: rgba(0, 206, 201, 0.16);
+      border-color: rgba(0, 206, 201, 0.55);
+    }
+
+    .ex-card__manage {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    .ex-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .ex-icon-btn:active {
+      transform: scale(0.92);
+      background: rgba(108, 92, 231, 0.18);
+      border-color: rgba(108, 92, 231, 0.45);
+    }
+
+    .ex-icon-btn--danger:active {
+      background: rgba(253, 121, 168, 0.14);
+      border-color: rgba(253, 121, 168, 0.45);
+    }
+
+    /* ── Exercise library (schedule tab) ── */
+    .ex-library {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ex-library__intro {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .ex-library__part {
+      margin-bottom: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .ex-library__part-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent-2);
+      background: linear-gradient(90deg, rgba(108, 92, 231, 0.14), transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ex-library__list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ex-library__row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .ex-library__row:last-of-type {
+      border-bottom: none;
+    }
+
+    .ex-library__name {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ex-library__meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .ex-library__actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .ex-library__part .ex-add-btn {
+      margin: 0;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    /* ── Exercise add/edit modal ── */
+    .exercise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    .exercise-overlay.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .exercise-modal {
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(160deg, var(--surface), var(--surface-2));
+      border: 1px solid rgba(108, 92, 231, 0.35);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 40px rgba(0, 206, 201, 0.08);
+      transform: translateY(12px) scale(0.97);
+      transition: transform 0.25s;
+    }
+
+    .exercise-overlay.is-visible .exercise-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .exercise-modal__title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .exercise-modal__desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .exercise-modal__input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      margin-bottom: 16px;
+    }
+
+    .exercise-modal__input:focus {
+      border-color: rgba(0, 206, 201, 0.55);
+      box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.12);
+    }
+
+    .exercise-modal__actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .exercise-modal__save {
+      flex: 1;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #0a0a0f;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .exercise-modal__save:active { transform: scale(0.97); }
+
+    .exercise-modal__cancel {
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .exercise-modal__cancel:active { transform: scale(0.97); }
+
     .today-empty {
       text-align: center;
       padding: 40px 20px;
@@ -1623,6 +1868,11 @@
       <div id="schedule-list" class="day-list"></div>
       <button type="button" class="save-btn" id="save-schedule">スケジュールを保存</button>
       <button type="button" class="reset-btn" id="reset-today">今日の記録をリセット</button>
+      <div class="ex-library" id="exercise-library-wrap">
+        <p class="section-title">種目ライブラリ</p>
+        <p class="ex-library__intro">各部位の種目を<strong>自由に追加・編集・削除</strong>できます。変更は端末に自動保存され、今日のメニューにも即反映されます。</p>
+        <div id="exercise-library"></div>
+      </div>
     </section>
 
     <section id="panel-calendar" class="panel cal-panel" aria-label="達成率カレンダー">
@@ -1669,6 +1919,19 @@
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- 種目追加・編集モーダル -->
+  <div class="exercise-overlay" id="exercise-overlay" aria-hidden="true" role="dialog" aria-labelledby="exercise-modal-title">
+    <div class="exercise-modal">
+      <h2 class="exercise-modal__title" id="exercise-modal-title">種目を追加</h2>
+      <p class="exercise-modal__desc" id="exercise-modal-desc">新しい種目名を入力してください。</p>
+      <input type="text" class="exercise-modal__input" id="exercise-modal-input" placeholder="例：インクラインダンベルプレス" maxlength="40" autocomplete="off">
+      <div class="exercise-modal__actions">
+        <button type="button" class="exercise-modal__save" id="exercise-modal-save">追加する</button>
+        <button type="button" class="exercise-modal__cancel" id="exercise-modal-cancel">キャンセル</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 初回設定 / 名前編集モーダル -->
   <div class="onboard-overlay" id="onboard-overlay" aria-hidden="true" role="dialog">
@@ -1757,7 +2020,7 @@
         rest:      { name: "休み", emoji: "😴" }
       };
 
-      var EXERCISES = {
+      var DEFAULT_EXERCISES = {
         chest: [
           { id: "bench-press",    name: "ベンチプレス",         sets: "3セット × 8〜12回",  defaultSets: 3 },
           { id: "incline-press",  name: "インクラインプレス",   sets: "3セット × 10回",     defaultSets: 3 },
@@ -1798,6 +2061,7 @@
       };
 
       var PART_ORDER = ["chest", "back", "legs", "shoulders", "arms", "core", "rest"];
+      var WORKOUT_PARTS = PART_ORDER.filter(function (p) { return p !== "rest"; });
 
       var DEFAULT_SCHEDULE = {
         mon: ["chest"], tue: ["back"], wed: ["legs"], thu: ["shoulders"],
@@ -1812,15 +2076,205 @@
         month: new Date().getMonth()
       };
       var state = loadData();
-      var exMap = buildExMap();
+      var exMap = {};
+      var exerciseModalState = { mode: "add", partKey: "", exerciseId: "" };
 
-      function buildExMap() {
-        var map = {};
-        Object.keys(EXERCISES).forEach(function (part) {
-          EXERCISES[part].forEach(function (ex) { map[ex.id] = ex; });
+      function clonePartExercises(partKey) {
+        return (DEFAULT_EXERCISES[partKey] || []).map(function (ex) {
+          var copy = {
+            id: ex.id,
+            name: ex.name,
+            sets: ex.sets,
+            defaultSets: ex.defaultSets
+          };
+          if (ex.bodyweight) copy.bodyweight = true;
+          if (ex.timed) copy.timed = true;
+          return copy;
         });
-        return map;
       }
+
+      function cloneDefaultExercises() {
+        var result = {};
+        Object.keys(DEFAULT_EXERCISES).forEach(function (part) {
+          result[part] = clonePartExercises(part);
+        });
+        return result;
+      }
+
+      function sanitizeExercise(raw) {
+        if (!raw || typeof raw !== "object") return null;
+        var name = String(raw.name || "").trim();
+        if (!name) return null;
+        var ex = {
+          id: String(raw.id || "").trim() || generateExerciseId("custom", name),
+          name: name,
+          sets: String(raw.sets || "3セット × 10回"),
+          defaultSets: raw.defaultSets || 3
+        };
+        if (raw.bodyweight) ex.bodyweight = true;
+        if (raw.timed) ex.timed = true;
+        return ex;
+      }
+
+      function normalizeExercises(raw) {
+        var result = {};
+        Object.keys(DEFAULT_EXERCISES).forEach(function (part) {
+          if (raw && Array.isArray(raw[part])) {
+            var list = raw[part].map(sanitizeExercise).filter(Boolean);
+            result[part] = list.length ? list : clonePartExercises(part);
+          } else {
+            result[part] = clonePartExercises(part);
+          }
+        });
+        return result;
+      }
+
+      function generateExerciseId(partKey, name) {
+        var slug = String(name || "ex")
+          .toLowerCase()
+          .replace(/[^\w\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 24);
+        return "custom-" + partKey + "-" + (slug || "ex") + "-" + Date.now().toString(36);
+      }
+
+      function rebuildExMap() {
+        exMap = {};
+        Object.keys(state.exercises).forEach(function (part) {
+          getPartExercises(part).forEach(function (ex) {
+            exMap[ex.id] = ex;
+          });
+        });
+      }
+
+      function getPartExercises(partKey) {
+        return state.exercises[partKey] || [];
+      }
+
+      function refreshAfterExerciseChange() {
+        rebuildExMap();
+        saveData();
+        renderToday();
+        renderExerciseLibrary();
+      }
+
+      function addExercise(partKey, name) {
+        name = String(name || "").trim();
+        if (!name) {
+          showToast("種目名を入力してください");
+          return false;
+        }
+        if (!state.exercises[partKey]) state.exercises[partKey] = [];
+        state.exercises[partKey].push({
+          id: generateExerciseId(partKey, name),
+          name: name,
+          sets: "3セット × 10回",
+          defaultSets: 3
+        });
+        refreshAfterExerciseChange();
+        showToast("「" + name + "」を追加しました");
+        return true;
+      }
+
+      function editExercise(partKey, exerciseId, newName) {
+        newName = String(newName || "").trim();
+        if (!newName) {
+          showToast("種目名を入力してください");
+          return false;
+        }
+        var list = getPartExercises(partKey);
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === exerciseId) {
+            list[i].name = newName;
+            refreshAfterExerciseChange();
+            showToast("種目名を更新しました");
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function deleteExercise(partKey, exerciseId) {
+        var list = getPartExercises(partKey);
+        var target = null;
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === exerciseId) {
+            target = list[i];
+            break;
+          }
+        }
+        if (!target) return;
+        if (list.length <= 1) {
+          showToast("各部位には最低1種目必要です");
+          return;
+        }
+        if (!window.confirm("「" + target.name + "」を削除しますか？\n（過去の記録データは端末内に残ります）")) return;
+        state.exercises[partKey] = list.filter(function (ex) { return ex.id !== exerciseId; });
+        delete expandedCards[exerciseId];
+        refreshAfterExerciseChange();
+        showToast("種目を削除しました");
+      }
+
+      function openExerciseModal(mode, partKey, exerciseId) {
+        var overlay = document.getElementById("exercise-overlay");
+        var title = document.getElementById("exercise-modal-title");
+        var desc = document.getElementById("exercise-modal-desc");
+        var input = document.getElementById("exercise-modal-input");
+        var saveBtn = document.getElementById("exercise-modal-save");
+        if (!overlay || !input) return;
+
+        exerciseModalState.mode = mode;
+        exerciseModalState.partKey = partKey;
+        exerciseModalState.exerciseId = exerciseId || "";
+
+        var partName = PARTS[partKey] ? PARTS[partKey].name : "";
+        if (mode === "edit") {
+          var current = null;
+          var editList = getPartExercises(partKey);
+          for (var ei = 0; ei < editList.length; ei++) {
+            if (editList[ei].id === exerciseId) {
+              current = editList[ei];
+              break;
+            }
+          }
+          title.textContent = partName + " — 種目を編集";
+          desc.textContent = "種目名を変更できます。記録データはそのまま引き継がれます。";
+          input.value = current ? current.name : "";
+          saveBtn.textContent = "保存する";
+        } else {
+          title.textContent = partName + " — 種目を追加";
+          desc.textContent = "新しい種目名を入力してください。";
+          input.value = "";
+          saveBtn.textContent = "追加する";
+        }
+
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+        input.focus();
+        input.select();
+      }
+
+      function hideExerciseModal() {
+        var overlay = document.getElementById("exercise-overlay");
+        if (!overlay) return;
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      function saveExerciseFromModal() {
+        var input = document.getElementById("exercise-modal-input");
+        if (!input) return;
+        var name = input.value;
+        var ok = false;
+        if (exerciseModalState.mode === "edit") {
+          ok = editExercise(exerciseModalState.partKey, exerciseModalState.exerciseId, name);
+        } else {
+          ok = addExercise(exerciseModalState.partKey, name);
+        }
+        if (ok) hideExerciseModal();
+      }
+
+      rebuildExMap();
 
       /* ── Persistence ── */
       function normalizeDayParts(value, fallback) {
@@ -1853,7 +2307,8 @@
               schedule: normalizeSchedule(parsed.schedule || {}),
               logs: parsed.logs || {},
               history: parsed.history || {},
-              groupName: parsed.groupName || ""
+              groupName: parsed.groupName || "",
+              exercises: normalizeExercises(parsed.exercises)
             };
           }
           var legacy = localStorage.getItem(LEGACY_KEY);
@@ -1863,11 +2318,18 @@
               schedule: normalizeSchedule(old.schedule || {}),
               logs: {},
               history: {},
-              groupName: ""
+              groupName: "",
+              exercises: cloneDefaultExercises()
             };
           }
         } catch (e) { /* ignore */ }
-        return { schedule: normalizeSchedule({}), logs: {}, history: {}, groupName: "" };
+        return {
+          schedule: normalizeSchedule({}),
+          logs: {},
+          history: {},
+          groupName: "",
+          exercises: cloneDefaultExercises()
+        };
       }
 
       function saveData() {
@@ -1875,7 +2337,8 @@
           schedule: state.schedule,
           logs: state.logs,
           history: state.history,
-          groupName: state.groupName || ""
+          groupName: state.groupName || "",
+          exercises: state.exercises
         }));
       }
 
@@ -1975,6 +2438,13 @@
 
       function bootApp() {
         appInitialized = true;
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (!parsed.exercises) saveData();
+          }
+        } catch (e) { /* ignore */ }
         wasAllComplete = getTodayProgress().allComplete;
         updateHeaderGroupDisplay();
         renderToday();
@@ -2053,7 +2523,7 @@
         PART_ORDER.forEach(function (pk) {
           if (pk === "rest") return;
           if (partKeys.indexOf(pk) < 0) return;
-          (EXERCISES[pk] || []).forEach(function (ex) {
+          (getPartExercises(pk)).forEach(function (ex) {
             list.push(ex);
           });
         });
@@ -2109,7 +2579,7 @@
         var names = [];
         partKeys.forEach(function (pk) {
           if (pk === "rest") return;
-          var exercises = EXERCISES[pk] || [];
+          var exercises = getPartExercises(pk);
           var anyDone = false;
           for (var i = 0; i < exercises.length; i++) {
             if (isExerciseComplete(exercises[i].id)) {
@@ -2357,7 +2827,68 @@
         return html + '</div>';
       }
 
-      function renderExerciseCard(ex) {
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderExerciseManageButtons(partKey, exerciseId) {
+        return (
+          '<button type="button" class="ex-icon-btn" data-action="ex-edit" data-part="' + partKey +
+            '" data-ex="' + exerciseId + '" aria-label="種目を編集">✏️</button>' +
+          '<button type="button" class="ex-icon-btn ex-icon-btn--danger" data-action="ex-delete" data-part="' + partKey +
+            '" data-ex="' + exerciseId + '" aria-label="種目を削除">🗑️</button>'
+        );
+      }
+
+      function handleExerciseManageClick(target) {
+        var action = target.getAttribute("data-action");
+        var partKey = target.getAttribute("data-part");
+        var exerciseId = target.getAttribute("data-ex");
+        if (action === "ex-add") {
+          openExerciseModal("add", partKey);
+          return true;
+        }
+        if (action === "ex-edit") {
+          openExerciseModal("edit", partKey, exerciseId);
+          return true;
+        }
+        if (action === "ex-delete") {
+          deleteExercise(partKey, exerciseId);
+          return true;
+        }
+        return false;
+      }
+
+      function renderExerciseLibrary() {
+        var container = document.getElementById("exercise-library");
+        if (!container) return;
+        var html = "";
+        WORKOUT_PARTS.forEach(function (pk) {
+          var exercises = getPartExercises(pk);
+          html += '<div class="ex-library__part">';
+          html += '<div class="ex-library__part-head">' + PARTS[pk].emoji + " " + PARTS[pk].name + "</div>";
+          html += '<div class="ex-library__list">';
+          exercises.forEach(function (ex) {
+            html += '<div class="ex-library__row">';
+            html += '<div style="flex:1;min-width:0">';
+            html += '<div class="ex-library__name">' + escapeHtml(ex.name) + "</div>";
+            html += '<div class="ex-library__meta">' + escapeHtml(ex.sets) + "</div>";
+            html += "</div>";
+            html += '<div class="ex-library__actions">' + renderExerciseManageButtons(pk, ex.id) + "</div>";
+            html += "</div>";
+          });
+          html += "</div>";
+          html += '<button type="button" class="ex-add-btn" data-action="ex-add" data-part="' + pk + '">＋ 種目を追加</button>';
+          html += "</div>";
+        });
+        container.innerHTML = html;
+      }
+
+      function renderExerciseCard(ex, partKey) {
         var id = ex.id;
         var entry = getExerciseEntry(id);
         var expanded = !!expandedCards[id];
@@ -2378,8 +2909,8 @@
                 '</svg>' +
               '</div>' +
               '<div class="ex-card__info">' +
-                '<div class="ex-card__name">' + ex.name + '</div>' +
-                '<div class="ex-card__meta">' + ex.sets +
+                '<div class="ex-card__name">' + escapeHtml(ex.name) + '</div>' +
+                '<div class="ex-card__meta">' + escapeHtml(ex.sets) +
                   (todaySummary ? ' · <span style="color:var(--accent-2)">今日: ' + todaySummary + '</span>' : '') +
                 '</div>';
 
@@ -2389,6 +2920,9 @@
         }
 
         html +=
+              '</div>' +
+              '<div class="ex-card__manage">' +
+                renderExerciseManageButtons(partKey, id) +
               '</div>' +
               '<div class="ex-card__chevron" aria-hidden="true">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
@@ -2487,12 +3021,13 @@
           '<div class="checklist" id="checklist">';
 
         partKeys.forEach(function (pk) {
-          var partExercises = EXERCISES[pk] || [];
+          var partExercises = getPartExercises(pk);
           if (!partExercises.length) return;
           html += '<div class="part-group">';
           html += '<div class="part-group__head">' + PARTS[pk].emoji + ' ' + PARTS[pk].name + '</div>';
           html += '<div class="part-group__list">';
-          partExercises.forEach(function (ex) { html += renderExerciseCard(ex); });
+          partExercises.forEach(function (ex) { html += renderExerciseCard(ex, pk); });
+          html += '<button type="button" class="ex-add-btn" data-action="ex-add" data-part="' + pk + '">＋ 種目を追加</button>';
           html += '</div></div>';
         });
 
@@ -2666,6 +3201,7 @@
         });
 
         list.innerHTML = html;
+        renderExerciseLibrary();
       }
 
       function handlePartCheckboxChange(checkbox) {
@@ -2732,6 +3268,12 @@
         if (!target) return;
 
         var action = target.getAttribute("data-action");
+        if (action === "ex-add" || action === "ex-edit" || action === "ex-delete") {
+          e.stopPropagation();
+          handleExerciseManageClick(target);
+          return;
+        }
+
         var exerciseId = target.getAttribute("data-ex");
         if (!exerciseId && action !== "toggle" && action !== "share" && action !== "finish-day") return;
 
@@ -2770,6 +3312,24 @@
         } else if (action === "remove") {
           removeSet(exerciseId, parseInt(target.getAttribute("data-set"), 10));
         }
+      });
+
+      document.getElementById("panel-schedule").addEventListener("click", function (e) {
+        var target = e.target.closest("[data-action]");
+        if (!target) return;
+        var action = target.getAttribute("data-action");
+        if (action === "ex-add" || action === "ex-edit" || action === "ex-delete") {
+          handleExerciseManageClick(target);
+        }
+      });
+
+      document.getElementById("exercise-modal-save").addEventListener("click", saveExerciseFromModal);
+      document.getElementById("exercise-modal-cancel").addEventListener("click", hideExerciseModal);
+      document.getElementById("exercise-modal-input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") saveExerciseFromModal();
+      });
+      document.getElementById("exercise-overlay").addEventListener("click", function (e) {
+        if (e.target === document.getElementById("exercise-overlay")) hideExerciseModal();
       });
 
       document.querySelectorAll(".nav__btn").forEach(function (btn) {
