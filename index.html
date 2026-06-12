@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>レンジャーズ筋トレ組 — 筋トレスケジュール</title>
+  <title>%Fit — パーセントフィット</title>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -67,6 +67,35 @@
 
     .header { margin-bottom: 24px; }
 
+    .header__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .header__edit {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .header__edit:active {
+      background: var(--surface-2);
+      border-color: rgba(108, 92, 231, 0.4);
+    }
+
     .header__badge {
       display: inline-flex;
       align-items: center;
@@ -84,19 +113,48 @@
     }
 
     .header__title {
-      font-size: 26px;
+      font-size: 34px;
       font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #fff 30%, #a29bfe);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .header__title-pct {
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header__title-fit {
+      background: linear-gradient(135deg, #fff 30%, #dfe6e9);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .header__subtitle {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
+    }
+
+    .header__group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-2);
+      background: rgba(0, 206, 201, 0.1);
+      border: 1px solid rgba(0, 206, 201, 0.22);
+      padding: 6px 12px;
+      border-radius: 999px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .panel { display: none; }
@@ -1315,12 +1373,27 @@
     .cal-day--lv2 .cal-day__pct { color: #a29bfe; }
 
     .cal-day--lv3 {
-      background: linear-gradient(145deg, rgba(0, 184, 148, 0.35), rgba(0, 206, 201, 0.2));
-      border-color: rgba(0, 184, 148, 0.45);
-      box-shadow: 0 2px 10px rgba(0, 184, 148, 0.2);
+      background: linear-gradient(145deg, #ffe566 0%, #ffb300 38%, #ff6b00 72%, #ff2d00 100%);
+      border-color: rgba(255, 215, 0, 0.75);
+      box-shadow:
+        0 0 16px rgba(255, 140, 0, 0.55),
+        0 2px 14px rgba(255, 45, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
-    .cal-day--lv3 .cal-day__pct { color: #55efc4; }
+    .cal-day--lv3 .cal-day__num { color: rgba(40, 20, 0, 0.75); }
+
+    .cal-day--lv3 .cal-day__pct {
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(120, 30, 0, 0.6);
+    }
+
+    .cal-day.is-today.cal-day--lv3 {
+      box-shadow:
+        0 0 0 2px #ffd700,
+        0 0 20px rgba(255, 140, 0, 0.65),
+        0 2px 14px rgba(255, 45, 0, 0.4);
+    }
 
     .cal-legend {
       display: flex;
@@ -1350,15 +1423,123 @@
 
     .cal-legend__swatch--lv1 { background: rgba(0, 206, 201, 0.25); }
     .cal-legend__swatch--lv2 { background: rgba(108, 92, 231, 0.35); }
-    .cal-legend__swatch--lv3 { background: rgba(0, 184, 148, 0.45); }
+    .cal-legend__swatch--lv3 {
+      background: linear-gradient(145deg, #ffe566, #ffb300, #ff6b00, #ff2d00);
+      border-color: rgba(255, 215, 0, 0.7);
+      box-shadow: 0 0 8px rgba(255, 140, 0, 0.45);
+    }
+
+    /* ── Onboarding / name edit modal ── */
+    .onboard-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .onboard-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .onboard-modal {
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(160deg, var(--surface), var(--surface-2));
+      border: 1px solid rgba(108, 92, 231, 0.35);
+      border-radius: var(--radius);
+      padding: 28px 22px 22px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transform: scale(0.9) translateY(16px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .onboard-overlay.is-visible .onboard-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .onboard-modal__logo {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .onboard-modal__logo-pct {
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .onboard-modal__title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .onboard-modal__desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .onboard-modal__input {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      min-height: 52px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .onboard-modal__input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
+    }
+
+    .onboard-modal__save {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 54px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 24px rgba(108, 92, 231, 0.4);
+    }
+
+    .onboard-modal__save:active { transform: scale(0.97); }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <div class="header__badge"><span>💪</span> Rangers Community</div>
-      <h1 class="header__title">レンジャーズ筋トレ組</h1>
-      <p class="header__subtitle">仲間と一緒に追い込む、筋トレスケジュール管理</p>
+      <div class="header__top">
+        <div class="header__badge"><span>📊</span> Percent Fit</div>
+        <button type="button" class="header__edit" id="edit-group-name" aria-label="グループ名を編集">✏️</button>
+      </div>
+      <h1 class="header__title"><span class="header__title-pct">%</span><span class="header__title-fit">Fit</span></h1>
+      <p class="header__subtitle">パーセントフィット — 達成率で記録する筋トレ管理</p>
+      <p class="header__group" id="header-group-name" hidden></p>
     </header>
 
     <section id="panel-today" class="panel is-active" aria-label="今日のトレーニング">
@@ -1417,6 +1598,17 @@
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- 初回設定 / 名前編集モーダル -->
+  <div class="onboard-overlay" id="onboard-overlay" aria-hidden="true" role="dialog">
+    <div class="onboard-modal">
+      <div class="onboard-modal__logo"><span class="onboard-modal__logo-pct">%</span>Fit</div>
+      <h2 class="onboard-modal__title" id="onboard-modal-title">ようこそ %Fit へ</h2>
+      <p class="onboard-modal__desc">グループ名または個人名を入力してください。<br>LINEシェアのヘッダーにも使われます。</p>
+      <input type="text" class="onboard-modal__input" id="group-name-input" placeholder="例：〇〇筋トレ組 / たろう" maxlength="30" autocomplete="off">
+      <button type="button" class="onboard-modal__save" id="group-name-save">はじめる</button>
+    </div>
+  </div>
 
   <!-- 終了確認モーダル -->
   <div class="finish-overlay" id="finish-overlay" aria-hidden="true" role="dialog">
@@ -1589,7 +1781,8 @@
             return {
               schedule: normalizeSchedule(parsed.schedule || {}),
               logs: parsed.logs || {},
-              history: parsed.history || {}
+              history: parsed.history || {},
+              groupName: parsed.groupName || ""
             };
           }
           var legacy = localStorage.getItem(LEGACY_KEY);
@@ -1598,19 +1791,96 @@
             return {
               schedule: normalizeSchedule(old.schedule || {}),
               logs: {},
-              history: {}
+              history: {},
+              groupName: ""
             };
           }
         } catch (e) { /* ignore */ }
-        return { schedule: normalizeSchedule({}), logs: {}, history: {} };
+        return { schedule: normalizeSchedule({}), logs: {}, history: {}, groupName: "" };
       }
 
       function saveData() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           schedule: state.schedule,
           logs: state.logs,
-          history: state.history
+          history: state.history,
+          groupName: state.groupName || ""
         }));
+      }
+
+      /* ── Group / personal name ── */
+      var appInitialized = false;
+
+      function getGroupName() {
+        return (state.groupName || "").trim();
+      }
+
+      function setGroupName(name) {
+        state.groupName = name.trim();
+        saveData();
+        updateHeaderGroupDisplay();
+      }
+
+      function updateHeaderGroupDisplay() {
+        var el = document.getElementById("header-group-name");
+        var name = getGroupName();
+        if (!el) return;
+        if (name) {
+          el.textContent = name;
+          el.hidden = false;
+        } else {
+          el.hidden = true;
+        }
+      }
+
+      function getSharePrefix() {
+        return "【" + (getGroupName() || "%Fit") + "】";
+      }
+
+      function showNameModal(isFirstLaunch) {
+        var overlay = document.getElementById("onboard-overlay");
+        var title = document.getElementById("onboard-modal-title");
+        var btn = document.getElementById("group-name-save");
+        var input = document.getElementById("group-name-input");
+        if (title) title.textContent = isFirstLaunch ? "ようこそ %Fit へ" : "名前を編集";
+        if (btn) btn.textContent = isFirstLaunch ? "はじめる" : "保存する";
+        if (input) input.value = getGroupName();
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+        if (isFirstLaunch) document.body.style.overflow = "hidden";
+        setTimeout(function () { if (input) input.focus(); }, 300);
+      }
+
+      function hideNameModal() {
+        var overlay = document.getElementById("onboard-overlay");
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function saveGroupNameFromInput(isFirstLaunch) {
+        var input = document.getElementById("group-name-input");
+        var name = input ? input.value.trim() : "";
+        if (!name) {
+          showToast("名前を入力してください");
+          return;
+        }
+        setGroupName(name);
+        hideNameModal();
+        if (isFirstLaunch && !appInitialized) {
+          bootApp();
+        } else {
+          showToast("名前を保存しました");
+        }
+      }
+
+      function bootApp() {
+        appInitialized = true;
+        wasAllComplete = getTodayProgress().allComplete;
+        updateHeaderGroupDisplay();
+        renderToday();
+        renderSchedule();
+        renderCalendar();
       }
 
       /* ── Achievement history ── */
@@ -1708,7 +1978,7 @@
       }
 
       function buildShareText() {
-        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #レンジャーズ筋トレ組 #筋トレ";
+        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #PercentFit #筋トレ";
       }
 
       function shareToX() {
@@ -1754,13 +2024,14 @@
       }
 
       function buildLineMessage() {
+        var prefix = getSharePrefix();
         var pct = getProgressPercent();
         var partNames = getTodayPartNames();
         var workedParts = getCompletedPartNames();
 
         if (pct >= 100) {
           return (
-            "【レンジャーズ筋トレ組】\n" +
+            prefix + "\n" +
             "今日の筋トレを100%コンプリート！完全勝利です🔥\n" +
             "クリア部位：" + partNames + "\n" +
             "みんなも負けずに追い込もう！"
@@ -1768,7 +2039,7 @@
         }
         if (pct >= 70) {
           return (
-            "【レンジャーズ筋トレ組】\n" +
+            prefix + "\n" +
             "今日の筋トレは " + pct + "% 達成！ガッツリ追い込みました💪\n" +
             "クリア部位：" + partNames + "\n" +
             "次は100%目指してまた頑張ります！"
@@ -1776,16 +2047,16 @@
         }
         if (pct >= 1) {
           return (
-            "【レンジャーズ筋トレ組】\n" +
+            prefix + "\n" +
             "今日の筋トレは " + pct + "% で終了！少しでも動いた自分を褒める。\n" +
             "やった部位：" + (workedParts || partNames) + "\n" +
             "チリツモ精神で次また爆発させます🔥"
           );
         }
         return (
-          "【レンジャーズ筋トレ組】\n" +
+          prefix + "\n" +
           "今日はリフレッシュ（またはこれから参戦）！\n" +
-          "次回、レンジャーズの牙を剥きます。"
+          "次回、また全力で追い込みます。"
         );
       }
 
@@ -2464,11 +2735,30 @@
       document.getElementById("cal-prev").addEventListener("click", function () { changeCalendarMonth(-1); });
       document.getElementById("cal-next").addEventListener("click", function () { changeCalendarMonth(1); });
 
-      /* ── Init ── */
-      wasAllComplete = getTodayProgress().allComplete;
-      renderToday();
-      renderSchedule();
-      renderCalendar();
+      document.getElementById("edit-group-name").addEventListener("click", function () {
+        showNameModal(false);
+      });
+
+      document.getElementById("group-name-save").addEventListener("click", function () {
+        saveGroupNameFromInput(!appInitialized);
+      });
+
+      document.getElementById("group-name-input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") saveGroupNameFromInput(!appInitialized);
+      });
+
+      document.getElementById("onboard-overlay").addEventListener("click", function (e) {
+        if (e.target === document.getElementById("onboard-overlay") && appInitialized) {
+          hideNameModal();
+        }
+      });
+
+      /* ── Boot ── */
+      if (getGroupName()) {
+        bootApp();
+      } else {
+        showNameModal(true);
+      }
     })();
   </script>
 </body>
