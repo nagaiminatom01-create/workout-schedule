@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REP SHARE（レップ・シェア）- オールインワン自作筋トレ習慣化・記録ツール</title>
+    <meta name="description" content="REP SHARE（レップ・シェア）の公式解説・ランディングページ。全6部位の完全自由な種目カスタマイズ機能や、行動経済学に基づいた100%達成視覚エフェクト、安全なlocalStorageデータ記録など、筋トレの習慣化を科学するツールの全貌を解説。">
+    <meta name="keywords" content="REP SHARE, レップシェア, 筋トレアプリ, 筋トレ記録, 種目カスタム, 習慣化, 行動経済学, マイプロテイン">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0f;
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.7;
+        }
+        @page {
+            size: A4;
+            margin: 15mm 12mm;
+            background-color: #0a0a0f;
+        }
+        
+        /* Navigation Header */
+        .nav-header {
+            width: 100%;
+            padding: 15px 24px;
+            background-color: #11111a;
+            border-bottom: 1px solid #1e293b;
+            display: table;
+        }
+        .nav-logo-area {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .nav-logo-area img {
+            height: 32px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .nav-logo-text {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            color: #ffffff;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .nav-btn-area {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: right;
+        }
+        .btn-cyan {
+            display: inline-block;
+            background-color: transparent;
+            color: #00f0ff;
+            border: 2px solid #00f0ff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+        .btn-cyan:hover {
+            background-color: #00f0ff;
+            color: #0a0a0f;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, #11111a 0%, #161622 100%);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .hero h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 900;
+            margin-bottom: 16px;
+            letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #ffffff, #00f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: clamp(15px, 2.5vw, 18px);
+            color: #94a3b8;
+            max-width: 650px;
+            margin: 0 auto 30px auto;
+        }
+        .btn-hero {
+            display: inline-block;
+            background: linear-gradient(90deg, #00f0ff, #00b8ff);
+            color: #0a0a0f;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 16px;
+            text-decoration: none;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-hero:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.7);
+        }
+
+        /* Feature Sections */
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            border-left: 4px solid #00f0ff;
+            padding-left: 12px;
+            margin-top: 50px;
+            margin-bottom: 24px;
+        }
+        .feature-card {
+            background-color: #11111a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        .feature-badge {
+            display: inline-block;
+            background-color: rgba(0, 240, 255, 0.1);
+            color: #00f0ff;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .feature-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 14px;
+            color: #f1f5f9;
+        }
+        .feature-card p {
+            color: #cbd5e1;
+            margin: 0;
+            font-size: 15px;
+            text-align: justify;
+        }
+
+        /* Column Section */
+        .column-box {
+            background: linear-gradient(135deg, #131520 0%, #1a1528 100%);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 8px;
+            padding: 28px;
+            margin-bottom: 40px;
+        }
+        .column-box h3 {
+            color: #e9d5ff;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .column-box p {
+            color: #cbd5e1;
+            font-size: 15px;
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        /* Legal / Privacy Section */
+        .legal-box {
+            background-color: #0f111a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .legal-box h3 {
+            font-size: 15px;
+            color: #cbd5e1;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+        .legal-box h3:first-child {
+            margin-top: 0;
+        }
+        .legal-box p, .legal-box ul {
+            margin: 0 0 12px 0;
+            padding-left: 0;
+        }
+        .legal-box ul {
+            padding-left: 20px;
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+        
+        /* Responsive utilities */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .hero {
+                padding: 40px 16px;
+            }
+            .feature-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ナビゲーションヘッダー -->
+    <header class="nav-header">
+        <div class="nav-logo-area">
+            <img src="logo.png" alt="" onerror="this.style.display='none';">
+            <span class="nav-logo-text">REP SHARE</span>
+        </div>
+        <div class="nav-btn-area">
+            <a href="index.html" class="btn-cyan">アプリを開く ➔</a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- ヒーローセクション -->
+        <section class="hero">
+            <h1>REP SHARE</h1>
+            <p>スマホ画面に完全最適化された、オールインワンの自作筋トレ習慣化・記録ツール。無駄な機能を削ぎ落とし、純粋にトレーニングと向き合うために設計されたストリート系ワークアウトデバイス。</p>
+            <a href="index.html" class="btn-hero">アプリを開いてトレーニングを始める ➔</a>
+        </section>
+
+        <!-- 機能解説：特徴01 -->
+        <h2 class="section-title">アプリケーションの主要機能</h2>
+        
+        <div class="feature-card">
+            <span class="feature-badge">Feature 01</span>
+            <h3>全6部位の完全自由な種目カスタマイズ機能</h3>
+            <p>
+                一般的なフィットネスアプリにありがちな「最初から決められたメニュー」による束縛を排除しました。胸、背中、脚、肩、腕、腹の基本6部位に対し、ユーザー自身が普段行っている独自のトレーニングメニューを自由に追加、編集、削除することが可能です。この高い柔軟性により、初心者からホームジムを持つコアなトレーニーまで、個人の環境や強度に最適化したワークアウトスケジュールを瞬時に構築できる技術的実用性を担保しています。
+            </p>
+        </div>
+
+        <!-- 機能解説：特徴02 -->
+        <div class="feature-card">
+            <span class="feature-badge">Feature 02</span>
+            <h3>モチベーションを科学する「100%達成エフェクト」と「カレンダー記録」</h3>
+            <p>
+                行動経済学および認知心理学における「視覚的報酬（Visual Reward）」の概念を取り入れています。その日に設定したトレーニング種目をすべてクリアし、達成率が100%に達した瞬間、画面全体がゴールドとファイアーレッドの鮮烈なエフェクトに包まれます。この「脳汁演出」により、肉体的な疲労を上回る強力な達成感を脳にフィードバックし、次回のトレーニングへの行動変容を促します。また、カレンダー機能と連動し、過去の実施ログがビジュアル化されることで、継続的なワークアウトのモチベーションを強固に維持します。
+            </p>
+        </div>
+
+        <!-- 論文風コラム -->
+        <h2 class="section-title">学術的アプローチ</h2>
+        
+        <div class="column-box">
+            <h3>筋トレにおける習慣化の重要性とデータの活用（過負荷の原則）</h3>
+            <p>
+                スポーツ科学および身体運動学において、筋肉の肥大および筋力の向上を効率的に達成するためには「過負荷の原則（Progressive Overload）」の遵守が絶対条件とされています。これは、身体が受ける負荷を段階的に増加させ続けなければ、肉体は一定のレベルで適応（停滞）してしまうという基本原則です。
+            </p>
+            <p>
+                この原則を実践する上で最も重要となるのが、日々のワークアウトの正確な「記録と可視化」です。人間は主観的な記憶に頼ると、無意識のうちにトレーニング強度をセーブしたり、過去の負荷量を曖昧に把握しがちになります。REP SHAREは、独自の軽量なデータ管理アーキテクチャにより、ユーザーがストレスなくその日のメニューを「完了」させ、カレンダーに刻み込める環境を提供します。自己の成長ログを客観的なデータとして日々蓄積・俯瞰することが、運動継続率（習慣化）を劇的に向上させ、過負荷の原則を正確にトレースするための強力な学術的アプローチとなります。
+            </p>
+        </div>
+
+        <!-- 規約・AdSense対策必須項目 -->
+        <h2 class="section-title">法的情報・運営実績</h2>
+        
+        <div class="legal-box">
+            <h3>プライバシーポリシー ＆ ユーザーデータの取り扱い</h3>
+            <p>
+                当アプリケーション「REP SHARE」は、利用者のプライバシーおよび個人情報の保護を最優先事項として設計されています。ユーザーが入力したトレーニング種目名、カレンダーの実施記録、設定データなどのすべての情報は、利用者のブラウザ内部の「localStorage」技術のみに保存されます。外部のサーバーへデータを収集・送信・蓄積する仕組みは一切排除されており、完全なローカルかつクリーンな環境で安心してご利用いただけます。
+            </p>
+
+            <h3>広告の配信とアフィリエイトプログラムについて</h3>
+            <p>
+                当サイトでは、アプリケーションの維持管理および開発継続のための実証実験として、第三者配信のアフィリエイト広告（マイプロテイン【Myprotein】）を一部導入・掲載しています。これらの広告リンクを経由して商品が購入された場合、当開発者に紹介報酬が支払われる仕組みとなっていますが、これによってユーザー側に不利益な費用や手数料が発生することは一切ありません。
+            </p>
+
+            <h3>免責事項</h3>
+            <p>
+                当アプリケーションに掲載されている情報や、トレーニング管理による効果、健康への影響については、細心の注意を払って設計しておりますが、その正確性や安全性を完全に保証するものではありません。万が一、本ツールの利用中に発生した怪我、体調不良、その他の損害について、開発運営者は一切の責任を負いかねますので、各個人の体調に合わせた無理のない強度でのトレーニングを実施してください。
+            </p>
+
+            <h3>運営者情報・お問い合わせ先</h3>
+            <p>
+                運営組織/開発者： REP SHARE 開発プロジェクトチーム<br>
+                連絡先メールアドレス： support-repshare[at]example.com （※[at]を@に書き換えてください）
+            </p>
+        </div>
+
+        <!-- 最下部ナビゲーション -->
+        <div class="footer-cta">
+            <a href="index.html" class="btn-hero" style="box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);">アプリ本体（index.html）へ移動 ➔</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
