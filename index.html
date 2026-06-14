@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>レンジャーズ筋トレ組 — 筋トレスケジュール</title>
+  <title>REP SHARE — 達成率で繋がる筋トレ管理</title>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -62,41 +62,146 @@
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: calc(12px + var(--safe-top)) 16px calc(92px + var(--safe-bottom)) 16px;
+      padding: calc(12px + var(--safe-top)) 16px calc(108px + var(--safe-bottom)) 16px;
     }
 
     .header { margin-bottom: 24px; }
 
+    .header__brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .header__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .header__logo-img {
+      height: 38px;
+      width: auto;
+      max-width: 44px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      object-fit: contain;
+      display: none;
+      border: 1px solid rgba(0, 206, 201, 0.22);
+      box-shadow:
+        0 0 14px rgba(0, 206, 201, 0.18),
+        0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .header__logo-img.is-visible {
+      display: block;
+    }
+
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .header__edit {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .header__edit:active {
+      background: var(--surface-2);
+      border-color: rgba(108, 92, 231, 0.4);
+    }
+
     .header__badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
+      gap: 4px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--accent-2);
       background: rgba(0, 206, 201, 0.12);
       border: 1px solid rgba(0, 206, 201, 0.25);
-      padding: 4px 10px;
+      padding: 5px 8px;
       border-radius: 999px;
-      margin-bottom: 10px;
+      white-space: nowrap;
     }
 
     .header__title {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #fff 30%, #a29bfe);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      line-height: 1.15;
+      font-style: italic;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 380px) {
+      .header__brand-row { gap: 6px; }
+      .header__logo-img { height: 32px; max-width: 36px; border-radius: 6px; }
+      .header__title { font-size: 16px; letter-spacing: 0.08em; }
+      .header__brand { gap: 8px; }
+      .header__logo-share { margin-left: 6px; }
+      .header__edit { width: 36px; height: 36px; font-size: 15px; }
+      .header__badge { display: none; }
+    }
+
+    .header__logo-rep {
+      color: #fff;
+      text-shadow: 0 0 18px rgba(0, 206, 201, 0.35);
+    }
+
+    .header__logo-share {
+      margin-left: 8px;
+      background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent) 55%, #fd79a8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      filter: drop-shadow(0 0 12px rgba(0, 206, 201, 0.35));
     }
 
     .header__subtitle {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
+    }
+
+    .header__group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-2);
+      background: rgba(0, 206, 201, 0.1);
+      border: 1px solid rgba(0, 206, 201, 0.22);
+      padding: 6px 12px;
+      border-radius: 999px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .panel { display: none; }
@@ -647,6 +752,251 @@
       gap: 12px;
     }
 
+    .ex-add-btn {
+      width: 100%;
+      margin-top: 4px;
+      padding: 13px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-2);
+      background: rgba(0, 206, 201, 0.08);
+      border: 1px dashed rgba(0, 206, 201, 0.35);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, border-color 0.2s, transform 0.12s;
+    }
+
+    .ex-add-btn:active {
+      transform: scale(0.98);
+      background: rgba(0, 206, 201, 0.16);
+      border-color: rgba(0, 206, 201, 0.55);
+    }
+
+    .ex-card__manage {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    .ex-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .ex-icon-btn:active {
+      transform: scale(0.92);
+      background: rgba(108, 92, 231, 0.18);
+      border-color: rgba(108, 92, 231, 0.45);
+    }
+
+    .ex-icon-btn--danger:active {
+      background: rgba(253, 121, 168, 0.14);
+      border-color: rgba(253, 121, 168, 0.45);
+    }
+
+    /* ── Exercise library (schedule tab) ── */
+    .ex-library {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ex-library__intro {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .ex-library__part {
+      margin-bottom: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .ex-library__part-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent-2);
+      background: linear-gradient(90deg, rgba(108, 92, 231, 0.14), transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ex-library__list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ex-library__row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .ex-library__row:last-of-type {
+      border-bottom: none;
+    }
+
+    .ex-library__name {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ex-library__meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .ex-library__actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .ex-library__part .ex-add-btn {
+      margin: 0;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    /* ── Exercise add/edit modal ── */
+    .exercise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    .exercise-overlay.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .exercise-modal {
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(160deg, var(--surface), var(--surface-2));
+      border: 1px solid rgba(108, 92, 231, 0.35);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 40px rgba(0, 206, 201, 0.08);
+      transform: translateY(12px) scale(0.97);
+      transition: transform 0.25s;
+    }
+
+    .exercise-overlay.is-visible .exercise-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .exercise-modal__title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .exercise-modal__desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .exercise-modal__input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      margin-bottom: 16px;
+    }
+
+    .exercise-modal__input:focus {
+      border-color: rgba(0, 206, 201, 0.55);
+      box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.12);
+    }
+
+    .exercise-modal__actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .exercise-modal__save {
+      flex: 1;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #0a0a0f;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .exercise-modal__save:active { transform: scale(0.97); }
+
+    .exercise-modal__cancel {
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .exercise-modal__cancel:active { transform: scale(0.97); }
+
     .today-empty {
       text-align: center;
       padding: 40px 20px;
@@ -874,20 +1224,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
-      padding: 12px 8px;
+      gap: 4px;
+      padding: 10px 4px;
       border: none;
       border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      min-height: 64px;
+      min-height: 60px;
     }
 
-    .nav__btn svg { width: 26px; height: 26px; }
+    .nav__btn svg { width: 22px; height: 22px; }
 
     .nav__btn.is-active {
       color: var(--text);
@@ -904,41 +1254,210 @@
       margin-bottom: 14px;
     }
 
-    /* ── Ad placeholders ── */
+    /* ── Ad placeholders (将来 AdSense / バナー画像に差し替え) ── */
+    .ad-banner-wrap {
+      margin-top: 28px;
+      margin-bottom: calc(8px + var(--safe-bottom));
+    }
+
     .ad-slot {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed rgba(255, 255, 255, 0.14);
-      border-radius: var(--radius-sm);
+      background: #1e293b;
+      border: 1px solid rgba(0, 206, 201, 0.28);
+      border-radius: 8px;
       overflow: hidden;
+      box-shadow:
+        0 0 18px rgba(0, 206, 201, 0.1),
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 0 32px rgba(108, 92, 231, 0.07);
     }
 
-    .ad-slot__label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+    .ad-slot::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(108, 92, 231, 0.14) 0%,
+        transparent 42%,
+        rgba(0, 206, 201, 0.1) 100%
+      );
+      pointer-events: none;
+    }
+
+    .ad-slot__badge {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      z-index: 1;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(139, 139, 158, 0.45);
+      color: rgba(0, 240, 255, 0.75);
       pointer-events: none;
       user-select: none;
     }
 
+    .ad-slot__inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 24px 16px 16px;
+      width: 100%;
+    }
+
+    .ad-slot__inner--banner {
+      gap: 5px;
+    }
+
+    .ad-slot__cta {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      line-height: 1.35;
+      color: #ffffff;
+      text-align: center;
+      text-shadow:
+        0 0 18px rgba(0, 240, 255, 0.45),
+        0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .ad-slot__subline {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #00f0ff;
+      text-align: center;
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+    }
+
     .ad-slot--banner {
       width: 100%;
-      min-height: 64px;
-      margin-top: 28px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.05));
+      min-height: 84px;
     }
 
     .ad-slot--rectangle {
       width: 100%;
       max-width: 300px;
-      min-height: 250px;
+      min-height: 128px;
       margin: 0 auto;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.06));
+    }
+
+    .ad-slot--affiliate {
+      border-color: rgba(255, 183, 77, 0.32);
+      box-shadow:
+        0 0 22px rgba(255, 183, 77, 0.12),
+        0 0 36px rgba(253, 121, 168, 0.08),
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 0 28px rgba(255, 183, 77, 0.06);
+    }
+
+    .ad-slot--affiliate::before {
+      background: linear-gradient(
+        145deg,
+        rgba(255, 183, 77, 0.12) 0%,
+        transparent 40%,
+        rgba(253, 121, 168, 0.1) 100%
+      );
+    }
+
+    .ad-slot--affiliate .ad-slot__badge {
+      color: rgba(255, 183, 77, 0.65);
+    }
+
+    .ad-slot__link {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 128px;
+      padding: 28px 18px 18px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+    }
+
+    .ad-slot__link:active {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .ad-slot--banner-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      cursor: pointer;
+      transition:
+        transform 0.22s cubic-bezier(0.34, 1.2, 0.64, 1),
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+    }
+
+    .ad-slot--banner-link:active {
+      transform: translateY(-3px) scale(1.015);
+      border-color: rgba(0, 240, 255, 0.7);
+      box-shadow:
+        0 0 32px rgba(0, 240, 255, 0.35),
+        0 8px 28px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 40px rgba(0, 240, 255, 0.12);
+    }
+
+    @media (hover: hover) {
+      .ad-slot--banner-link:hover {
+        transform: translateY(-2px);
+        border-color: rgba(0, 240, 255, 0.55);
+        box-shadow:
+          0 0 26px rgba(0, 240, 255, 0.28),
+          0 6px 24px rgba(0, 0, 0, 0.38),
+          inset 0 0 36px rgba(108, 92, 231, 0.1);
+      }
+    }
+
+    .ad-slot--affiliate .ad-slot__link {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.65;
+      text-align: center;
+      color: #fff8e7;
+      -webkit-text-fill-color: #fff8e7;
+      background: none;
+      text-shadow:
+        0 0 20px rgba(255, 200, 80, 0.65),
+        0 0 40px rgba(253, 121, 168, 0.25),
+        0 2px 4px rgba(0, 0, 0, 0.45);
+      transition: transform 0.2s ease, text-shadow 0.25s ease, background 0.2s;
+    }
+
+    .ad-slot--affiliate .ad-slot__link:active {
+      transform: scale(1.02);
+      background: rgba(255, 200, 80, 0.08);
+      text-shadow:
+        0 0 28px rgba(255, 215, 100, 0.85),
+        0 0 48px rgba(253, 121, 168, 0.35),
+        0 2px 4px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (hover: hover) {
+      .ad-slot--affiliate .ad-slot__link:hover {
+        text-shadow:
+          0 0 24px rgba(255, 215, 100, 0.75),
+          0 0 44px rgba(253, 121, 168, 0.3),
+          0 2px 4px rgba(0, 0, 0, 0.45);
+      }
     }
 
     /* ── Complete celebration modal ── */
@@ -1037,7 +1556,7 @@
 
     .complete-modal__ad-wrap {
       animation: fadeSlideUp 0.5s ease 0.45s both;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .complete-modal__actions {
@@ -1196,14 +1715,318 @@
       0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
       100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
     }
+
+    /* ── Calendar ── */
+    .cal-panel { padding-bottom: calc(12px + var(--safe-bottom)); }
+
+    #panel-schedule { padding-bottom: calc(8px + var(--safe-bottom)); }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 8px;
+    }
+
+    .cal-header__title {
+      font-size: 18px;
+      font-weight: 800;
+      flex: 1;
+      text-align: center;
+    }
+
+    .cal-nav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cal-nav-btn:active { background: var(--surface-2); transform: scale(0.94); }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .cal-weekday {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 6px 0;
+    }
+
+    .cal-weekday--sun { color: #fd79a8; }
+    .cal-weekday--sat { color: var(--accent-2); }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      min-height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px;
+    }
+
+    .cal-day--empty {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .cal-day__num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    .cal-day__pct {
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-day.is-today {
+      box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.55);
+    }
+
+    .cal-day--lv0 {
+      background: rgba(139, 139, 158, 0.12);
+    }
+
+    .cal-day--lv0 .cal-day__pct { color: var(--text-muted); }
+
+    .cal-day--lv1 {
+      background: rgba(0, 206, 201, 0.14);
+      border-color: rgba(0, 206, 201, 0.25);
+    }
+
+    .cal-day--lv1 .cal-day__pct { color: #55efc4; }
+
+    .cal-day--lv2 {
+      background: rgba(108, 92, 231, 0.22);
+      border-color: rgba(108, 92, 231, 0.35);
+    }
+
+    .cal-day--lv2 .cal-day__pct { color: #a29bfe; }
+
+    .cal-day--lv3 {
+      background: linear-gradient(145deg, #ffe566 0%, #ffb300 38%, #ff6b00 72%, #ff2d00 100%);
+      border-color: rgba(255, 215, 0, 0.75);
+      box-shadow:
+        0 0 16px rgba(255, 140, 0, 0.55),
+        0 2px 14px rgba(255, 45, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .cal-day--lv3 .cal-day__num { color: rgba(40, 20, 0, 0.75); }
+
+    .cal-day--lv3 .cal-day__pct {
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(120, 30, 0, 0.6);
+    }
+
+    .cal-day.is-today.cal-day--lv3 {
+      box-shadow:
+        0 0 0 2px #ffd700,
+        0 0 20px rgba(255, 140, 0, 0.65),
+        0 2px 14px rgba(255, 45, 0, 0.4);
+    }
+
+    .cal-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cal-legend__item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .cal-legend__swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .cal-legend__swatch--lv1 { background: rgba(0, 206, 201, 0.25); }
+    .cal-legend__swatch--lv2 { background: rgba(108, 92, 231, 0.35); }
+    .cal-legend__swatch--lv3 {
+      background: linear-gradient(145deg, #ffe566, #ffb300, #ff6b00, #ff2d00);
+      border-color: rgba(255, 215, 0, 0.7);
+      box-shadow: 0 0 8px rgba(255, 140, 0, 0.45);
+    }
+
+    /* ── Onboarding / name edit modal ── */
+    .onboard-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .onboard-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .onboard-modal {
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(160deg, var(--surface), var(--surface-2));
+      border: 1px solid rgba(108, 92, 231, 0.35);
+      border-radius: var(--radius);
+      padding: 28px 22px 22px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transform: scale(0.9) translateY(16px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .onboard-overlay.is-visible .onboard-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .onboard-modal__logo {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    .onboard-modal__logo-rep {
+      color: #fff;
+    }
+
+    .onboard-modal__logo-share {
+      margin-left: 6px;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .onboard-modal__title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .onboard-modal__desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .onboard-modal__input {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      min-height: 52px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .onboard-modal__input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
+    }
+
+    .onboard-modal__save {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 54px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 24px rgba(108, 92, 231, 0.4);
+    }
+
+    .onboard-modal__save:active { transform: scale(0.97); }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <div class="header__badge"><span>💪</span> Rangers Community</div>
-      <h1 class="header__title">レンジャーズ筋トレ組</h1>
-      <p class="header__subtitle">仲間と一緒に追い込む、筋トレスケジュール管理</p>
+      <div class="header__brand-row">
+        <div class="header__brand">
+          <img
+            class="header__logo-img"
+            id="header-logo-img"
+            src="logo.png"
+            alt="REP SHARE ロゴ"
+            width="38"
+            height="38"
+            decoding="async"
+            loading="eager"
+          >
+          <h1 class="header__title" id="header-text-logo">
+            <span class="header__logo-rep">REP</span><span class="header__logo-share">SHARE</span>
+          </h1>
+        </div>
+        <div class="header__actions">
+          <div class="header__badge"><span>🔥</span> REP · SHARE</div>
+          <button type="button" class="header__edit" id="edit-group-name" aria-label="グループ名を編集">✏️</button>
+        </div>
+      </div>
+      <p class="header__subtitle">達成率で記録・共有する筋トレ管理アプリ</p>
+      <p class="header__group" id="header-group-name" hidden></p>
     </header>
 
     <section id="panel-today" class="panel is-active" aria-label="今日のトレーニング">
@@ -1216,6 +2039,36 @@
       <div id="schedule-list" class="day-list"></div>
       <button type="button" class="save-btn" id="save-schedule">スケジュールを保存</button>
       <button type="button" class="reset-btn" id="reset-today">今日の記録をリセット</button>
+      <div class="ex-library" id="exercise-library-wrap">
+        <p class="section-title">種目ライブラリ</p>
+        <p class="ex-library__intro">各部位の種目を<strong>自由に追加・編集・削除</strong>できます。変更は端末に自動保存され、今日のメニューにも即反映されます。</p>
+        <div id="exercise-library"></div>
+      </div>
+    </section>
+
+    <section id="panel-calendar" class="panel cal-panel" aria-label="達成率カレンダー">
+      <p class="schedule-intro">日ごとの達成率をカレンダーで振り返れます。色が濃いほど高達成です。</p>
+      <div class="cal-header">
+        <button type="button" class="cal-nav-btn" id="cal-prev" aria-label="前月">‹</button>
+        <h2 class="cal-header__title" id="cal-title"></h2>
+        <button type="button" class="cal-nav-btn" id="cal-next" aria-label="翌月">›</button>
+      </div>
+      <div class="cal-weekdays">
+        <div class="cal-weekday cal-weekday--sun">日</div>
+        <div class="cal-weekday">月</div>
+        <div class="cal-weekday">火</div>
+        <div class="cal-weekday">水</div>
+        <div class="cal-weekday">木</div>
+        <div class="cal-weekday">金</div>
+        <div class="cal-weekday cal-weekday--sat">土</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <span class="cal-legend__item"><span class="cal-legend__swatch cal-legend__swatch--lv3"></span>100%</span>
+        <span class="cal-legend__item"><span class="cal-legend__swatch cal-legend__swatch--lv2"></span>70〜99%</span>
+        <span class="cal-legend__item"><span class="cal-legend__swatch cal-legend__swatch--lv1"></span>1〜69%</span>
+        <span class="cal-legend__item"><span class="cal-legend__swatch"></span>記録なし</span>
+      </div>
     </section>
   </div>
 
@@ -1229,10 +2082,38 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
         スケジュール
       </button>
+      <button type="button" class="nav__btn" data-tab="calendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+        カレンダー
+      </button>
     </div>
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- 種目追加・編集モーダル -->
+  <div class="exercise-overlay" id="exercise-overlay" aria-hidden="true" role="dialog" aria-labelledby="exercise-modal-title">
+    <div class="exercise-modal">
+      <h2 class="exercise-modal__title" id="exercise-modal-title">種目を追加</h2>
+      <p class="exercise-modal__desc" id="exercise-modal-desc">新しい種目名を入力してください。</p>
+      <input type="text" class="exercise-modal__input" id="exercise-modal-input" placeholder="例：インクラインダンベルプレス" maxlength="40" autocomplete="off">
+      <div class="exercise-modal__actions">
+        <button type="button" class="exercise-modal__save" id="exercise-modal-save">追加する</button>
+        <button type="button" class="exercise-modal__cancel" id="exercise-modal-cancel">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 初回設定 / 名前編集モーダル -->
+  <div class="onboard-overlay" id="onboard-overlay" aria-hidden="true" role="dialog">
+    <div class="onboard-modal">
+      <div class="onboard-modal__logo"><span class="onboard-modal__logo-rep">REP</span><span class="onboard-modal__logo-share">SHARE</span></div>
+      <h2 class="onboard-modal__title" id="onboard-modal-title">ようこそ REP SHARE へ</h2>
+      <p class="onboard-modal__desc">グループ名または個人名を入力してください。<br>LINEシェアのヘッダーにも使われます。</p>
+      <input type="text" class="onboard-modal__input" id="group-name-input" placeholder="例：〇〇筋トレ組 / たろう" maxlength="30" autocomplete="off">
+      <button type="button" class="onboard-modal__save" id="group-name-save">はじめる</button>
+    </div>
+  </div>
 
   <!-- 終了確認モーダル -->
   <div class="finish-overlay" id="finish-overlay" aria-hidden="true" role="dialog">
@@ -1256,9 +2137,13 @@
       <h2 class="complete-modal__title" id="complete-title">本日のトレーニング完了！<br>お疲れ様でした！🔥</h2>
       <p class="complete-modal__sub">すべての種目をクリアしました。素晴らしい一日です！</p>
       <div class="complete-modal__ad-wrap">
-        <!-- ADSENSE AREA -->
-        <div class="ad-slot ad-slot--rectangle" id="ad-modal-rectangle">
-          <span class="ad-slot__label">Sponsored</span>
+        <!-- 将来ここにAdSenseコードを貼り付け: <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX"></ins> -->
+        <!-- 将来ここにバナー画像に差し替え: <img src="affiliate-banner.png" alt="おすすめプロテイン"> -->
+        <div class="ad-slot ad-slot--rectangle ad-slot--affiliate" id="ad-modal-rectangle">
+          <span class="ad-slot__badge">RECOMMEND</span>
+          <a class="ad-slot__link" href="https://px.a8.net/svt/ejp?a8mat=4B5U49+1RPEIA+45DI+60H7M" target="_blank" rel="noopener noreferrer sponsored">
+            豊富な60種類以上の味が揃ったプロテイン【Myprotein】を見る ➔
+          </a>
         </div>
       </div>
       <div class="complete-modal__actions">
@@ -1289,6 +2174,7 @@
       var REPS_MAX    = 99;
       var REPS_MIN    = 1;
       var QUICK_WEIGHTS = [0, 20, 40, 60, 80, 100];
+      var AFFILIATE_URL = "https://px.a8.net/svt/ejp?a8mat=4B5U49+1RPEIA+45DI+60H7M";
 
       var DAYS = [
         { key: "mon", label: "月", jsDay: 1 },
@@ -1310,7 +2196,7 @@
         rest:      { name: "休み", emoji: "😴" }
       };
 
-      var EXERCISES = {
+      var DEFAULT_EXERCISES = {
         chest: [
           { id: "bench-press",    name: "ベンチプレス",         sets: "3セット × 8〜12回",  defaultSets: 3 },
           { id: "incline-press",  name: "インクラインプレス",   sets: "3セット × 10回",     defaultSets: 3 },
@@ -1351,6 +2237,7 @@
       };
 
       var PART_ORDER = ["chest", "back", "legs", "shoulders", "arms", "core", "rest"];
+      var WORKOUT_PARTS = PART_ORDER.filter(function (p) { return p !== "rest"; });
 
       var DEFAULT_SCHEDULE = {
         mon: ["chest"], tue: ["back"], wed: ["legs"], thu: ["shoulders"],
@@ -1360,16 +2247,210 @@
       /* ── State ── */
       var expandedCards = {};
       var wasAllComplete = false;
+      var calendarView = {
+        year: new Date().getFullYear(),
+        month: new Date().getMonth()
+      };
       var state = loadData();
-      var exMap = buildExMap();
+      var exMap = {};
+      var exerciseModalState = { mode: "add", partKey: "", exerciseId: "" };
 
-      function buildExMap() {
-        var map = {};
-        Object.keys(EXERCISES).forEach(function (part) {
-          EXERCISES[part].forEach(function (ex) { map[ex.id] = ex; });
+      function clonePartExercises(partKey) {
+        return (DEFAULT_EXERCISES[partKey] || []).map(function (ex) {
+          var copy = {
+            id: ex.id,
+            name: ex.name,
+            sets: ex.sets,
+            defaultSets: ex.defaultSets
+          };
+          if (ex.bodyweight) copy.bodyweight = true;
+          if (ex.timed) copy.timed = true;
+          return copy;
         });
-        return map;
       }
+
+      function cloneDefaultExercises() {
+        var result = {};
+        Object.keys(DEFAULT_EXERCISES).forEach(function (part) {
+          result[part] = clonePartExercises(part);
+        });
+        return result;
+      }
+
+      function sanitizeExercise(raw) {
+        if (!raw || typeof raw !== "object") return null;
+        var name = String(raw.name || "").trim();
+        if (!name) return null;
+        var ex = {
+          id: String(raw.id || "").trim() || generateExerciseId("custom", name),
+          name: name,
+          sets: String(raw.sets || "3セット × 10回"),
+          defaultSets: raw.defaultSets || 3
+        };
+        if (raw.bodyweight) ex.bodyweight = true;
+        if (raw.timed) ex.timed = true;
+        return ex;
+      }
+
+      function normalizeExercises(raw) {
+        var result = {};
+        Object.keys(DEFAULT_EXERCISES).forEach(function (part) {
+          if (raw && Array.isArray(raw[part])) {
+            var list = raw[part].map(sanitizeExercise).filter(Boolean);
+            result[part] = list.length ? list : clonePartExercises(part);
+          } else {
+            result[part] = clonePartExercises(part);
+          }
+        });
+        return result;
+      }
+
+      function generateExerciseId(partKey, name) {
+        var slug = String(name || "ex")
+          .toLowerCase()
+          .replace(/[^\w\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 24);
+        return "custom-" + partKey + "-" + (slug || "ex") + "-" + Date.now().toString(36);
+      }
+
+      function rebuildExMap() {
+        exMap = {};
+        Object.keys(state.exercises).forEach(function (part) {
+          getPartExercises(part).forEach(function (ex) {
+            exMap[ex.id] = ex;
+          });
+        });
+      }
+
+      function getPartExercises(partKey) {
+        return state.exercises[partKey] || [];
+      }
+
+      function refreshAfterExerciseChange() {
+        rebuildExMap();
+        saveData();
+        renderToday();
+        renderExerciseLibrary();
+      }
+
+      function addExercise(partKey, name) {
+        name = String(name || "").trim();
+        if (!name) {
+          showToast("種目名を入力してください");
+          return false;
+        }
+        if (!state.exercises[partKey]) state.exercises[partKey] = [];
+        state.exercises[partKey].push({
+          id: generateExerciseId(partKey, name),
+          name: name,
+          sets: "3セット × 10回",
+          defaultSets: 3
+        });
+        refreshAfterExerciseChange();
+        showToast("「" + name + "」を追加しました");
+        return true;
+      }
+
+      function editExercise(partKey, exerciseId, newName) {
+        newName = String(newName || "").trim();
+        if (!newName) {
+          showToast("種目名を入力してください");
+          return false;
+        }
+        var list = getPartExercises(partKey);
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === exerciseId) {
+            list[i].name = newName;
+            refreshAfterExerciseChange();
+            showToast("種目名を更新しました");
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function deleteExercise(partKey, exerciseId) {
+        var list = getPartExercises(partKey);
+        var target = null;
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === exerciseId) {
+            target = list[i];
+            break;
+          }
+        }
+        if (!target) return;
+        if (list.length <= 1) {
+          showToast("各部位には最低1種目必要です");
+          return;
+        }
+        if (!window.confirm("「" + target.name + "」を削除しますか？\n（過去の記録データは端末内に残ります）")) return;
+        state.exercises[partKey] = list.filter(function (ex) { return ex.id !== exerciseId; });
+        delete expandedCards[exerciseId];
+        refreshAfterExerciseChange();
+        showToast("種目を削除しました");
+      }
+
+      function openExerciseModal(mode, partKey, exerciseId) {
+        var overlay = document.getElementById("exercise-overlay");
+        var title = document.getElementById("exercise-modal-title");
+        var desc = document.getElementById("exercise-modal-desc");
+        var input = document.getElementById("exercise-modal-input");
+        var saveBtn = document.getElementById("exercise-modal-save");
+        if (!overlay || !input) return;
+
+        exerciseModalState.mode = mode;
+        exerciseModalState.partKey = partKey;
+        exerciseModalState.exerciseId = exerciseId || "";
+
+        var partName = PARTS[partKey] ? PARTS[partKey].name : "";
+        if (mode === "edit") {
+          var current = null;
+          var editList = getPartExercises(partKey);
+          for (var ei = 0; ei < editList.length; ei++) {
+            if (editList[ei].id === exerciseId) {
+              current = editList[ei];
+              break;
+            }
+          }
+          title.textContent = partName + " — 種目を編集";
+          desc.textContent = "種目名を変更できます。記録データはそのまま引き継がれます。";
+          input.value = current ? current.name : "";
+          saveBtn.textContent = "保存する";
+        } else {
+          title.textContent = partName + " — 種目を追加";
+          desc.textContent = "新しい種目名を入力してください。";
+          input.value = "";
+          saveBtn.textContent = "追加する";
+        }
+
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+        input.focus();
+        input.select();
+      }
+
+      function hideExerciseModal() {
+        var overlay = document.getElementById("exercise-overlay");
+        if (!overlay) return;
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      function saveExerciseFromModal() {
+        var input = document.getElementById("exercise-modal-input");
+        if (!input) return;
+        var name = input.value;
+        var ok = false;
+        if (exerciseModalState.mode === "edit") {
+          ok = editExercise(exerciseModalState.partKey, exerciseModalState.exerciseId, name);
+        } else {
+          ok = addExercise(exerciseModalState.partKey, name);
+        }
+        if (ok) hideExerciseModal();
+      }
+
+      rebuildExMap();
 
       /* ── Persistence ── */
       function normalizeDayParts(value, fallback) {
@@ -1400,7 +2481,10 @@
             var parsed = JSON.parse(raw);
             return {
               schedule: normalizeSchedule(parsed.schedule || {}),
-              logs: parsed.logs || {}
+              logs: parsed.logs || {},
+              history: parsed.history || {},
+              groupName: parsed.groupName || "",
+              exercises: normalizeExercises(parsed.exercises)
             };
           }
           var legacy = localStorage.getItem(LEGACY_KEY);
@@ -1408,18 +2492,165 @@
             var old = JSON.parse(legacy);
             return {
               schedule: normalizeSchedule(old.schedule || {}),
-              logs: {}
+              logs: {},
+              history: {},
+              groupName: "",
+              exercises: cloneDefaultExercises()
             };
           }
         } catch (e) { /* ignore */ }
-        return { schedule: normalizeSchedule({}), logs: {} };
+        return {
+          schedule: normalizeSchedule({}),
+          logs: {},
+          history: {},
+          groupName: "",
+          exercises: cloneDefaultExercises()
+        };
       }
 
       function saveData() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           schedule: state.schedule,
-          logs: state.logs
+          logs: state.logs,
+          history: state.history,
+          groupName: state.groupName || "",
+          exercises: state.exercises
         }));
+      }
+
+      /* ── Group / personal name ── */
+      var appInitialized = false;
+
+      function getGroupName() {
+        return (state.groupName || "").trim();
+      }
+
+      function setGroupName(name) {
+        state.groupName = name.trim();
+        saveData();
+        updateHeaderGroupDisplay();
+      }
+
+      function updateHeaderGroupDisplay() {
+        var el = document.getElementById("header-group-name");
+        var name = getGroupName();
+        if (!el) return;
+        if (name) {
+          el.textContent = name;
+          el.hidden = false;
+        } else {
+          el.hidden = true;
+        }
+      }
+
+      function initHeaderLogo() {
+        var img = document.getElementById("header-logo-img");
+        var textLogo = document.getElementById("header-text-logo");
+        if (!img || !textLogo) return;
+
+        function showTextFallback() {
+          img.classList.remove("is-visible");
+          img.style.display = "none";
+          img.setAttribute("aria-hidden", "true");
+          textLogo.hidden = false;
+        }
+
+        function showImageLogo() {
+          img.classList.add("is-visible");
+          img.style.display = "block";
+          img.removeAttribute("aria-hidden");
+          textLogo.hidden = false;
+        }
+
+        img.addEventListener("load", showImageLogo);
+        img.addEventListener("error", showTextFallback);
+
+        if (img.complete) {
+          if (img.naturalWidth > 0) showImageLogo();
+          else showTextFallback();
+        }
+      }
+
+      function getSharePrefix() {
+        return "【" + (getGroupName() || "REP SHARE") + "】";
+      }
+
+      function showNameModal(isFirstLaunch) {
+        var overlay = document.getElementById("onboard-overlay");
+        var title = document.getElementById("onboard-modal-title");
+        var btn = document.getElementById("group-name-save");
+        var input = document.getElementById("group-name-input");
+        if (title) title.textContent = isFirstLaunch ? "ようこそ REP SHARE へ" : "名前を編集";
+        if (btn) btn.textContent = isFirstLaunch ? "はじめる" : "保存する";
+        if (input) input.value = getGroupName();
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+        if (isFirstLaunch) document.body.style.overflow = "hidden";
+        setTimeout(function () { if (input) input.focus(); }, 300);
+      }
+
+      function hideNameModal() {
+        var overlay = document.getElementById("onboard-overlay");
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function saveGroupNameFromInput(isFirstLaunch) {
+        var input = document.getElementById("group-name-input");
+        var name = input ? input.value.trim() : "";
+        if (!name) {
+          showToast("名前を入力してください");
+          return;
+        }
+        setGroupName(name);
+        hideNameModal();
+        if (isFirstLaunch && !appInitialized) {
+          bootApp();
+        } else {
+          showToast("名前を保存しました");
+        }
+      }
+
+      function bootApp() {
+        appInitialized = true;
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (!parsed.exercises) saveData();
+          }
+        } catch (e) { /* ignore */ }
+        wasAllComplete = getTodayProgress().allComplete;
+        updateHeaderGroupDisplay();
+        renderToday();
+        renderSchedule();
+        renderCalendar();
+      }
+
+      /* ── Achievement history ── */
+      function saveDayHistory(pct) {
+        var key = todayKey();
+        var rate = Math.max(0, Math.min(100, Math.round(pct)));
+        var current = state.history[key];
+        if (current === undefined || rate > current) {
+          state.history[key] = rate;
+          saveData();
+        }
+      }
+
+      function getHistoryLevel(pct) {
+        if (pct === undefined || pct === null) return null;
+        if (pct >= 100) return 3;
+        if (pct >= 70) return 2;
+        if (pct >= 1) return 1;
+        return 0;
+      }
+
+      function dateKeyFromParts(year, month, day) {
+        return year + "-" +
+          String(month + 1).padStart(2, "0") + "-" +
+          String(day).padStart(2, "0");
       }
 
       /* ── Date helpers ── */
@@ -1468,7 +2699,7 @@
         PART_ORDER.forEach(function (pk) {
           if (pk === "rest") return;
           if (partKeys.indexOf(pk) < 0) return;
-          (EXERCISES[pk] || []).forEach(function (ex) {
+          (getPartExercises(pk)).forEach(function (ex) {
             list.push(ex);
           });
         });
@@ -1492,7 +2723,7 @@
       }
 
       function buildShareText() {
-        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #レンジャーズ筋トレ組 #筋トレ";
+        return "今日の筋トレ完了！進捗100%！🔥 " + getTodayPartNames() + " を追い込みました。 #REPSHARE #筋トレ";
       }
 
       function shareToX() {
@@ -1524,7 +2755,7 @@
         var names = [];
         partKeys.forEach(function (pk) {
           if (pk === "rest") return;
-          var exercises = EXERCISES[pk] || [];
+          var exercises = getPartExercises(pk);
           var anyDone = false;
           for (var i = 0; i < exercises.length; i++) {
             if (isExerciseComplete(exercises[i].id)) {
@@ -1538,13 +2769,14 @@
       }
 
       function buildLineMessage() {
+        var prefix = getSharePrefix();
         var pct = getProgressPercent();
         var partNames = getTodayPartNames();
         var workedParts = getCompletedPartNames();
 
         if (pct >= 100) {
           return (
-            "【レンジャーズ筋トレ組】\n" +
+            prefix + "\n" +
             "今日の筋トレを100%コンプリート！完全勝利です🔥\n" +
             "クリア部位：" + partNames + "\n" +
             "みんなも負けずに追い込もう！"
@@ -1552,7 +2784,7 @@
         }
         if (pct >= 70) {
           return (
-            "【レンジャーズ筋トレ組】\n" +
+            prefix + "\n" +
             "今日の筋トレは " + pct + "% 達成！ガッツリ追い込みました💪\n" +
             "クリア部位：" + partNames + "\n" +
             "次は100%目指してまた頑張ります！"
@@ -1560,16 +2792,16 @@
         }
         if (pct >= 1) {
           return (
-            "【レンジャーズ筋トレ組】\n" +
+            prefix + "\n" +
             "今日の筋トレは " + pct + "% で終了！少しでも動いた自分を褒める。\n" +
             "やった部位：" + (workedParts || partNames) + "\n" +
             "チリツモ精神で次また爆発させます🔥"
           );
         }
         return (
-          "【レンジャーズ筋トレ組】\n" +
+          prefix + "\n" +
           "今日はリフレッシュ（またはこれから参戦）！\n" +
-          "次回、レンジャーズの牙を剥きます。"
+          "次回、また全力で追い込みます。"
         );
       }
 
@@ -1588,6 +2820,7 @@
 
       function showFinishConfirmDialog() {
         var pct = getProgressPercent();
+        saveDayHistory(pct);
         document.getElementById("finish-modal-pct").textContent = pct + "%";
         var overlay = document.getElementById("finish-overlay");
         overlay.classList.add("is-visible");
@@ -1770,7 +3003,68 @@
         return html + '</div>';
       }
 
-      function renderExerciseCard(ex) {
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderExerciseManageButtons(partKey, exerciseId) {
+        return (
+          '<button type="button" class="ex-icon-btn" data-action="ex-edit" data-part="' + partKey +
+            '" data-ex="' + exerciseId + '" aria-label="種目を編集">✏️</button>' +
+          '<button type="button" class="ex-icon-btn ex-icon-btn--danger" data-action="ex-delete" data-part="' + partKey +
+            '" data-ex="' + exerciseId + '" aria-label="種目を削除">🗑️</button>'
+        );
+      }
+
+      function handleExerciseManageClick(target) {
+        var action = target.getAttribute("data-action");
+        var partKey = target.getAttribute("data-part");
+        var exerciseId = target.getAttribute("data-ex");
+        if (action === "ex-add") {
+          openExerciseModal("add", partKey);
+          return true;
+        }
+        if (action === "ex-edit") {
+          openExerciseModal("edit", partKey, exerciseId);
+          return true;
+        }
+        if (action === "ex-delete") {
+          deleteExercise(partKey, exerciseId);
+          return true;
+        }
+        return false;
+      }
+
+      function renderExerciseLibrary() {
+        var container = document.getElementById("exercise-library");
+        if (!container) return;
+        var html = "";
+        WORKOUT_PARTS.forEach(function (pk) {
+          var exercises = getPartExercises(pk);
+          html += '<div class="ex-library__part">';
+          html += '<div class="ex-library__part-head">' + PARTS[pk].emoji + " " + PARTS[pk].name + "</div>";
+          html += '<div class="ex-library__list">';
+          exercises.forEach(function (ex) {
+            html += '<div class="ex-library__row">';
+            html += '<div style="flex:1;min-width:0">';
+            html += '<div class="ex-library__name">' + escapeHtml(ex.name) + "</div>";
+            html += '<div class="ex-library__meta">' + escapeHtml(ex.sets) + "</div>";
+            html += "</div>";
+            html += '<div class="ex-library__actions">' + renderExerciseManageButtons(pk, ex.id) + "</div>";
+            html += "</div>";
+          });
+          html += "</div>";
+          html += '<button type="button" class="ex-add-btn" data-action="ex-add" data-part="' + pk + '">＋ 種目を追加</button>';
+          html += "</div>";
+        });
+        container.innerHTML = html;
+      }
+
+      function renderExerciseCard(ex, partKey) {
         var id = ex.id;
         var entry = getExerciseEntry(id);
         var expanded = !!expandedCards[id];
@@ -1791,8 +3085,8 @@
                 '</svg>' +
               '</div>' +
               '<div class="ex-card__info">' +
-                '<div class="ex-card__name">' + ex.name + '</div>' +
-                '<div class="ex-card__meta">' + ex.sets +
+                '<div class="ex-card__name">' + escapeHtml(ex.name) + '</div>' +
+                '<div class="ex-card__meta">' + escapeHtml(ex.sets) +
                   (todaySummary ? ' · <span style="color:var(--accent-2)">今日: ' + todaySummary + '</span>' : '') +
                 '</div>';
 
@@ -1802,6 +3096,9 @@
         }
 
         html +=
+              '</div>' +
+              '<div class="ex-card__manage">' +
+                renderExerciseManageButtons(partKey, id) +
               '</div>' +
               '<div class="ex-card__chevron" aria-hidden="true">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
@@ -1900,12 +3197,13 @@
           '<div class="checklist" id="checklist">';
 
         partKeys.forEach(function (pk) {
-          var partExercises = EXERCISES[pk] || [];
+          var partExercises = getPartExercises(pk);
           if (!partExercises.length) return;
           html += '<div class="part-group">';
           html += '<div class="part-group__head">' + PARTS[pk].emoji + ' ' + PARTS[pk].name + '</div>';
           html += '<div class="part-group__list">';
-          partExercises.forEach(function (ex) { html += renderExerciseCard(ex); });
+          partExercises.forEach(function (ex) { html += renderExerciseCard(ex, pk); });
+          html += '<button type="button" class="ex-add-btn" data-action="ex-add" data-part="' + pk + '">＋ 種目を追加</button>';
           html += '</div></div>';
         });
 
@@ -1961,6 +3259,7 @@
       }
 
       function showCompleteModal() {
+        saveDayHistory(getProgressPercent());
         var overlay = document.getElementById("complete-overlay");
         overlay.classList.add("is-visible");
         overlay.setAttribute("aria-hidden", "false");
@@ -1984,11 +3283,75 @@
 
       function renderBannerAd() {
         return (
-          '<!-- ADSENSE AREA -->' +
-          '<div class="ad-slot ad-slot--banner" id="ad-today-banner">' +
-            '<span class="ad-slot__label">Sponsored</span>' +
+          '<div class="ad-banner-wrap">' +
+            '<!-- 将来ここにAdSenseコードを貼り付け: <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX"></ins> -->' +
+            '<!-- 将来ここにバナー画像に差し替え: <img src="banner-ad.png" alt="スポンサー"> -->' +
+            '<a class="ad-slot ad-slot--banner ad-slot--banner-link" id="ad-today-banner" href="' + AFFILIATE_URL + '" target="_blank" rel="noopener noreferrer sponsored">' +
+              '<span class="ad-slot__badge">SPONSORED</span>' +
+              '<div class="ad-slot__inner ad-slot__inner--banner">' +
+                '<span class="ad-slot__cta">マイプロテイン公式ストア ➔</span>' +
+                '<span class="ad-slot__subline">60種類以上の味 · プロテイン</span>' +
+              '</div>' +
+            '</a>' +
           '</div>'
         );
+      }
+
+      function renderCalendar() {
+        var year = calendarView.year;
+        var month = calendarView.month;
+        var title = document.getElementById("cal-title");
+        var grid = document.getElementById("cal-grid");
+        if (!title || !grid) return;
+
+        title.textContent = year + "年" + (month + 1) + "月";
+
+        var firstDay = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var today = todayKey();
+        var html = "";
+        var cellIndex = 0;
+
+        for (var i = 0; i < firstDay; i++) {
+          html += '<div class="cal-day cal-day--empty"></div>';
+          cellIndex++;
+        }
+
+        for (var day = 1; day <= daysInMonth; day++) {
+          var dateKey = dateKeyFromParts(year, month, day);
+          var pct = state.history[dateKey];
+          var level = getHistoryLevel(pct);
+          var cls = "cal-day";
+          if (dateKey === today) cls += " is-today";
+          if (level !== null) cls += " cal-day--lv" + level;
+
+          html += '<div class="' + cls + '">';
+          html += '<span class="cal-day__num">' + day + '</span>';
+          if (level !== null) {
+            html += '<span class="cal-day__pct">' + pct + '%</span>';
+          }
+          html += '</div>';
+          cellIndex++;
+        }
+
+        while (cellIndex % 7 !== 0) {
+          html += '<div class="cal-day cal-day--empty"></div>';
+          cellIndex++;
+        }
+
+        grid.innerHTML = html;
+      }
+
+      function changeCalendarMonth(delta) {
+        calendarView.month += delta;
+        if (calendarView.month > 11) {
+          calendarView.month = 0;
+          calendarView.year++;
+        } else if (calendarView.month < 0) {
+          calendarView.month = 11;
+          calendarView.year--;
+        }
+        renderCalendar();
       }
 
       function renderSchedule() {
@@ -2021,6 +3384,7 @@
         });
 
         list.innerHTML = html;
+        renderExerciseLibrary();
       }
 
       function handlePartCheckboxChange(checkbox) {
@@ -2078,6 +3442,7 @@
         });
         if (tab === "schedule") renderSchedule();
         if (tab === "today") renderToday();
+        if (tab === "calendar") renderCalendar();
       }
 
       /* ── Event delegation (stable parent) ── */
@@ -2086,6 +3451,12 @@
         if (!target) return;
 
         var action = target.getAttribute("data-action");
+        if (action === "ex-add" || action === "ex-edit" || action === "ex-delete") {
+          e.stopPropagation();
+          handleExerciseManageClick(target);
+          return;
+        }
+
         var exerciseId = target.getAttribute("data-ex");
         if (!exerciseId && action !== "toggle" && action !== "share" && action !== "finish-day") return;
 
@@ -2124,6 +3495,24 @@
         } else if (action === "remove") {
           removeSet(exerciseId, parseInt(target.getAttribute("data-set"), 10));
         }
+      });
+
+      document.getElementById("panel-schedule").addEventListener("click", function (e) {
+        var target = e.target.closest("[data-action]");
+        if (!target) return;
+        var action = target.getAttribute("data-action");
+        if (action === "ex-add" || action === "ex-edit" || action === "ex-delete") {
+          handleExerciseManageClick(target);
+        }
+      });
+
+      document.getElementById("exercise-modal-save").addEventListener("click", saveExerciseFromModal);
+      document.getElementById("exercise-modal-cancel").addEventListener("click", hideExerciseModal);
+      document.getElementById("exercise-modal-input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") saveExerciseFromModal();
+      });
+      document.getElementById("exercise-overlay").addEventListener("click", function (e) {
+        if (e.target === document.getElementById("exercise-overlay")) hideExerciseModal();
       });
 
       document.querySelectorAll(".nav__btn").forEach(function (btn) {
@@ -2176,6 +3565,7 @@
       });
 
       document.getElementById("finish-confirm").addEventListener("click", function () {
+        saveDayHistory(getProgressPercent());
         hideFinishConfirmDialog();
         shareToLine();
       });
@@ -2184,10 +3574,34 @@
         if (e.target === document.getElementById("finish-overlay")) hideFinishConfirmDialog();
       });
 
-      /* ── Init ── */
-      wasAllComplete = getTodayProgress().allComplete;
-      renderToday();
-      renderSchedule();
+      document.getElementById("cal-prev").addEventListener("click", function () { changeCalendarMonth(-1); });
+      document.getElementById("cal-next").addEventListener("click", function () { changeCalendarMonth(1); });
+
+      document.getElementById("edit-group-name").addEventListener("click", function () {
+        showNameModal(false);
+      });
+
+      document.getElementById("group-name-save").addEventListener("click", function () {
+        saveGroupNameFromInput(!appInitialized);
+      });
+
+      document.getElementById("group-name-input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") saveGroupNameFromInput(!appInitialized);
+      });
+
+      document.getElementById("onboard-overlay").addEventListener("click", function (e) {
+        if (e.target === document.getElementById("onboard-overlay") && appInitialized) {
+          hideNameModal();
+        }
+      });
+
+      /* ── Boot ── */
+      initHeaderLogo();
+      if (getGroupName()) {
+        bootApp();
+      } else {
+        showNameModal(true);
+      }
     })();
   </script>
 </body>
