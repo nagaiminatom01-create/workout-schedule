@@ -1992,6 +1992,239 @@
       border-radius: var(--radius-sm);
     }
 
+    /* ── AI chat panel ── */
+    .ai-panel {
+      padding-bottom: calc(12px + var(--safe-bottom));
+    }
+
+    .ai-key-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .ai-key-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .ai-key-input {
+      width: 100%;
+      padding: 13px 14px;
+      font-size: 14px;
+      font-family: ui-monospace, monospace;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .ai-key-input:focus {
+      border-color: rgba(0, 206, 201, 0.55);
+      box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.12);
+    }
+
+    .ai-key-save {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0a0a0f;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 46px;
+    }
+
+    .ai-key-save:active { transform: scale(0.98); }
+
+    .ai-key-status {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-2);
+    }
+
+    .ai-chat {
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+    }
+
+    .ai-chat__timeline {
+      flex: 1;
+      min-height: 280px;
+      max-height: min(52vh, 420px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .ai-chat__empty {
+      margin: auto;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      padding: 24px 12px;
+    }
+
+    .ai-bubble {
+      max-width: 88%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.65;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .ai-bubble--user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.85), rgba(0, 206, 201, 0.75));
+      color: #fff;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 16px rgba(108, 92, 231, 0.25);
+    }
+
+    .ai-bubble--assistant {
+      align-self: flex-start;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .ai-bubble--pending {
+      opacity: 0.85;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .ai-bubble--pending::after {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      margin-left: 4px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 8px 0 0 var(--accent-2), 16px 0 0 var(--accent-2);
+      animation: aiDots 1s steps(3, end) infinite;
+    }
+
+    @keyframes aiDots {
+      0%   { box-shadow: 8px 0 0 transparent, 16px 0 0 transparent; }
+      33%  { box-shadow: 8px 0 0 var(--accent-2), 16px 0 0 transparent; }
+      66%  { box-shadow: 8px 0 0 var(--accent-2), 16px 0 0 var(--accent-2); }
+    }
+
+    .ai-bubble__label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 6px;
+    }
+
+    .ai-chat__composer {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .ai-chat__input {
+      flex: 1;
+      min-height: 48px;
+      max-height: 120px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      resize: vertical;
+      outline: none;
+    }
+
+    .ai-chat__input:focus {
+      border-color: rgba(0, 206, 201, 0.55);
+      box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.12);
+    }
+
+    .ai-chat__send {
+      flex-shrink: 0;
+      min-width: 72px;
+      min-height: 48px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #0a0a0f;
+      background: linear-gradient(135deg, #00f0ff, var(--accent-2));
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.2);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .ai-chat__send:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .ai-chat__send:not(:disabled):active {
+      transform: scale(0.96);
+    }
+
+    .ai-chat__send.is-loading {
+      position: relative;
+      color: transparent;
+    }
+
+    .ai-chat__send.is-loading::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(10, 10, 15, 0.25);
+      border-top-color: #0a0a0f;
+      border-radius: 50%;
+      animation: aiSpin 0.7s linear infinite;
+    }
+
+    @keyframes aiSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 380px) {
+      .nav__inner { gap: 6px; }
+      .nav__btn { font-size: 9px; min-height: 56px; padding: 8px 2px; }
+      .nav__btn svg { width: 20px; height: 20px; }
+    }
+
     /* ── Onboarding / name edit modal ── */
     .onboard-overlay {
       position: fixed;
@@ -2174,6 +2407,25 @@
         <p class="pr-section__intro">全期間のトレーニング記録から、種目ごとの最高重量（kg）を自動集計しています。</p>
       </div>
     </section>
+
+    <section id="panel-ai" class="panel ai-panel" aria-label="AI相談">
+      <p class="schedule-intro">筋トレ・メニュー・栄養などをAIコーチに相談できます。APIキーは端末内にのみ保存され、REP SHAREのトレーニング記録（fitschedule_v2）とは別管理です。</p>
+      <div class="ai-key-box">
+        <p class="section-title">APIキー設定</p>
+        <p class="ai-key-hint">OpenAIのAPIキー（sk-...）を入力して保存してください。キーはこの端末の localStorage にのみ保持されます。</p>
+        <input type="password" class="ai-key-input" id="ai-api-key-input" placeholder="sk-..." autocomplete="off" spellcheck="false">
+        <button type="button" class="ai-key-save" id="ai-api-key-save">APIキーを保存</button>
+        <p class="ai-key-status" id="ai-key-status" aria-live="polite"></p>
+      </div>
+      <div class="ai-chat">
+        <p class="section-title">チャット</p>
+        <div class="ai-chat__timeline" id="ai-chat-timeline" aria-live="polite"></div>
+        <div class="ai-chat__composer">
+          <textarea class="ai-chat__input" id="ai-input" rows="2" placeholder="例：胸の日のメニュー配分を教えて / プロテインのタイミングは？" maxlength="2000"></textarea>
+          <button type="button" class="ai-chat__send" id="ai-send-btn">送信</button>
+        </div>
+      </div>
+    </section>
   </div>
 
   <nav class="nav" aria-label="メインナビゲーション">
@@ -2189,6 +2441,10 @@
       <button type="button" class="nav__btn" data-tab="calendar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
         カレンダー
+      </button>
+      <button type="button" class="nav__btn" data-tab="ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a7 7 0 0 0-4 12.7V19a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 3z"/><path d="M9 22h6"/><path d="M10 19h4"/></svg>
+        AI相談
       </button>
     </div>
     <!-- 下部に公式解説ブログ（Blogger）への動線を配置 -->
@@ -2285,6 +2541,10 @@
       var REPS_MIN    = 1;
       var QUICK_WEIGHTS = [0, 20, 40, 60, 80, 100];
       var AFFILIATE_URL = "https://px.a8.net/svt/ejp?a8mat=4B5U49+1RPEIA+45DI+60H7M";
+      var AI_KEY_STORAGE = "repshare_openai_api_key";
+      var AI_CHAT_STORAGE = "repshare_ai_chat_messages";
+      var OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
+      var OPENAI_MODEL = "gpt-4o-mini";
 
       var DAYS = [
         { key: "mon", label: "月", jsDay: 1 },
@@ -2364,6 +2624,8 @@
       var state = loadData();
       var exMap = {};
       var exerciseModalState = { mode: "add", partKey: "", exerciseId: "" };
+      var aiChatMessages = [];
+      var aiSending = false;
 
       function clonePartExercises(partKey) {
         return (DEFAULT_EXERCISES[partKey] || []).map(function (ex) {
@@ -3677,6 +3939,241 @@
         });
       }
 
+      /* ── AI chat ── */
+      function loadAiApiKey() {
+        try {
+          return localStorage.getItem(AI_KEY_STORAGE) || "";
+        } catch (e) {
+          return "";
+        }
+      }
+
+      function saveAiApiKey(key) {
+        try {
+          localStorage.setItem(AI_KEY_STORAGE, key.trim());
+        } catch (e) {
+          showToast("APIキーの保存に失敗しました");
+        }
+      }
+
+      function loadAiChatMessages() {
+        try {
+          var raw = localStorage.getItem(AI_CHAT_STORAGE);
+          if (!raw) return [];
+          var parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed.filter(function (m) {
+            return m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string";
+          });
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveAiChatMessages() {
+        try {
+          localStorage.setItem(AI_CHAT_STORAGE, JSON.stringify(aiChatMessages));
+        } catch (e) { /* ignore */ }
+      }
+
+      function maskApiKey(key) {
+        if (!key) return "";
+        if (key.length <= 8) return "********";
+        return key.slice(0, 7) + "..." + key.slice(-4);
+      }
+
+      function updateAiKeyStatus() {
+        var el = document.getElementById("ai-key-status");
+        var key = loadAiApiKey();
+        if (!el) return;
+        el.textContent = key
+          ? "✓ APIキー保存済み（" + maskApiKey(key) + "）"
+          : "APIキーが未設定です";
+      }
+
+      function initAiPanel() {
+        var keyInput = document.getElementById("ai-api-key-input");
+        var savedKey = loadAiApiKey();
+        if (keyInput && savedKey) keyInput.value = savedKey;
+        aiChatMessages = loadAiChatMessages();
+        updateAiKeyStatus();
+        renderAiChat();
+      }
+
+      function buildAiContextSnippet() {
+        var parts = getTodayPartNames();
+        var pct = getProgressPercent();
+        var data = buildPersonalRecordsGrouped();
+        var prLines = [];
+
+        WORKOUT_PARTS.forEach(function (pk) {
+          var items = data.grouped[pk];
+          if (!items || !items.length) return;
+          items.forEach(function (item) {
+            prLines.push(item.name + " " + formatWeight(item.weight) + "kg");
+          });
+        });
+        data.other.forEach(function (item) {
+          prLines.push(item.name + " " + formatWeight(item.weight) + "kg");
+        });
+
+        var prText = prLines.length
+          ? prLines.slice(0, 15).join("、") + (prLines.length > 15 ? " など" : "")
+          : "まだ重量記録なし";
+
+        return (
+          "【アプリ内コンテキスト】\n" +
+          "- 今日の部位: " + parts + "\n" +
+          "- 今日の達成率: " + pct + "%\n" +
+          "- 自己ベスト種目数: " + prLines.length + "\n" +
+          "- 自己ベスト一覧（種目名: 最高重量）: " + prText
+        );
+      }
+
+      function buildOpenAiMessages() {
+        var systemContent =
+          "あなたは筋トレアプリ「REP SHARE」のAIコーチです。日本語で、筋トレメニュー・フォーム・休息・栄養・モチベーションについて、実践的で前向きなアドバイスを提供してください。医学的診断や危険な極端ダイエットは推奨しないでください。回答は簡潔に、箇条書きも活用してください。\n" +
+          buildAiContextSnippet();
+        var messages = [{ role: "system", content: systemContent }];
+        aiChatMessages.forEach(function (msg) {
+          messages.push({ role: msg.role, content: msg.content });
+        });
+        return messages;
+      }
+
+      function renderAiChat() {
+        var timeline = document.getElementById("ai-chat-timeline");
+        if (!timeline) return;
+
+        if (!aiChatMessages.length && !aiSending) {
+          timeline.innerHTML =
+            '<div class="ai-chat__empty">' +
+              "🤖 AIコーチに相談してみましょう。<br>" +
+              "メニュー構成、重量設定、回復方法など何でもOKです。" +
+            "</div>";
+          return;
+        }
+
+        var html = "";
+        aiChatMessages.forEach(function (msg) {
+          var isUser = msg.role === "user";
+          html +=
+            '<div class="ai-bubble ai-bubble--' + (isUser ? "user" : "assistant") + '">' +
+              '<span class="ai-bubble__label">' + (isUser ? "You" : "AI Coach") + "</span>" +
+              escapeHtml(msg.content) +
+            "</div>";
+        });
+
+        if (aiSending) {
+          html +=
+            '<div class="ai-bubble ai-bubble--assistant ai-bubble--pending">' +
+              '<span class="ai-bubble__label">AI Coach</span>通信中' +
+            "</div>";
+        }
+
+        timeline.innerHTML = html;
+        timeline.scrollTop = timeline.scrollHeight;
+      }
+
+      function setAiLoading(loading) {
+        aiSending = loading;
+        var btn = document.getElementById("ai-send-btn");
+        var input = document.getElementById("ai-input");
+        if (btn) {
+          btn.disabled = loading;
+          btn.classList.toggle("is-loading", loading);
+          btn.textContent = loading ? "" : "送信";
+          btn.setAttribute("aria-busy", loading ? "true" : "false");
+        }
+        if (input) input.disabled = loading;
+        renderAiChat();
+      }
+
+      function sendAiMessage() {
+        if (aiSending) return;
+
+        var apiKey = loadAiApiKey();
+        if (!apiKey) {
+          showToast("APIキーを設定してください");
+          updateAiKeyStatus();
+          return;
+        }
+
+        var input = document.getElementById("ai-input");
+        if (!input) return;
+        var text = input.value.trim();
+        if (!text) {
+          showToast("質問を入力してください");
+          return;
+        }
+
+        aiChatMessages.push({ role: "user", content: text });
+        input.value = "";
+        saveAiChatMessages();
+        setAiLoading(true);
+
+        fetch(OPENAI_CHAT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiKey
+          },
+          body: JSON.stringify({
+            model: OPENAI_MODEL,
+            messages: buildOpenAiMessages(),
+            temperature: 0.7
+          })
+        })
+          .then(function (response) {
+            return response.json().then(function (data) {
+              if (!response.ok) {
+                var errMsg = (data && data.error && data.error.message)
+                  ? data.error.message
+                  : "APIエラー（" + response.status + "）";
+                throw new Error(errMsg);
+              }
+              return data;
+            });
+          })
+          .then(function (data) {
+            var reply = data.choices &&
+              data.choices[0] &&
+              data.choices[0].message &&
+              data.choices[0].message.content;
+            if (!reply) throw new Error("AIからの応答を取得できませんでした");
+            aiChatMessages.push({ role: "assistant", content: String(reply).trim() });
+            saveAiChatMessages();
+            renderAiChat();
+          })
+          .catch(function (err) {
+            var msg = err && err.message ? err.message : "通信に失敗しました";
+            if (/failed to fetch|network/i.test(msg)) {
+              msg = "通信エラー：ネットワークまたはCORS制限を確認してください";
+            }
+            showToast(msg);
+          })
+          .finally(function () {
+            setAiLoading(false);
+          });
+      }
+
+      function saveAiApiKeyFromInput() {
+        var input = document.getElementById("ai-api-key-input");
+        if (!input) return;
+        var key = input.value.trim();
+        if (!key) {
+          showToast("APIキーを入力してください");
+          return;
+        }
+        if (!key.startsWith("sk-")) {
+          showToast("OpenAI APIキー（sk-...）の形式を確認してください");
+          return;
+        }
+        saveAiApiKey(key);
+        updateAiKeyStatus();
+        showToast("APIキーを保存しました");
+      }
+
       function switchTab(tab) {
         document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("is-active"); });
         document.getElementById("panel-" + tab).classList.add("is-active");
@@ -3689,6 +4186,7 @@
         if (tab === "schedule") renderSchedule();
         if (tab === "today") renderToday();
         if (tab === "calendar") renderCalendar();
+        if (tab === "ai") renderAiChat();
       }
 
       /* ── Event delegation (stable parent) ── */
@@ -3836,6 +4334,15 @@
         if (e.key === "Enter") saveGroupNameFromInput(!appInitialized);
       });
 
+      document.getElementById("ai-api-key-save").addEventListener("click", saveAiApiKeyFromInput);
+      document.getElementById("ai-send-btn").addEventListener("click", sendAiMessage);
+      document.getElementById("ai-input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendAiMessage();
+        }
+      });
+
       document.getElementById("onboard-overlay").addEventListener("click", function (e) {
         if (e.target === document.getElementById("onboard-overlay") && appInitialized) {
           hideNameModal();
@@ -3844,6 +4351,7 @@
 
       /* ── Boot ── */
       initHeaderLogo();
+      initAiPanel();
       if (getGroupName()) {
         bootApp();
       } else {
