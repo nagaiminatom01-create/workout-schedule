@@ -3,7 +3,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 
 echo ========================================
-echo  川崎鬼ごっこ2 - 開発サーバー起動
+echo  恋愛シミュレーションゲーム - 開発サーバー起動
 echo  （Anaconda Prompt から実行してください）
 echo ========================================
 echo.
@@ -34,8 +34,9 @@ if not exist node_modules (
 echo.
 echo 起動中... ブラウザで次の URL を開いてください:
 echo.
-echo   トップページ: http://localhost:3000/
-echo   ゲーム画面:   http://localhost:3000/play
+echo   恋愛ストーリー: http://localhost:3000/story
+echo   トップページ:   http://localhost:3000/
+echo   ゲーム画面:     http://localhost:3000/play
 echo.
 echo 終了するには Ctrl+C を押してください。
 echo ========================================

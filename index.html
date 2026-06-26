@@ -1892,6 +1892,106 @@
       box-shadow: 0 0 8px rgba(255, 140, 0, 0.45);
     }
 
+    /* ── Personal records ── */
+    .pr-section {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+    }
+
+    .pr-section__title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent-2);
+      margin-bottom: 6px;
+    }
+
+    .pr-section__intro {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .pr-part {
+      margin-bottom: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .pr-part__head {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-2);
+      background: linear-gradient(90deg, rgba(108, 92, 231, 0.14), transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pr-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pr-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .pr-row:last-child {
+      border-bottom: none;
+    }
+
+    .pr-row__name {
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .pr-row__weight {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffeaa7;
+      text-shadow: 0 0 12px rgba(255, 200, 80, 0.35);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pr-row.is-today .pr-row__weight {
+      color: #00f0ff;
+      text-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+    }
+
+    .pr-row__badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #00f0ff;
+      margin-left: 6px;
+    }
+
+    .pr-empty {
+      text-align: center;
+      padding: 28px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+    }
+
     /* ── Onboarding / name edit modal ── */
     .onboard-overlay {
       position: fixed;
@@ -2068,6 +2168,10 @@
         <span class="cal-legend__item"><span class="cal-legend__swatch cal-legend__swatch--lv2"></span>70〜99%</span>
         <span class="cal-legend__item"><span class="cal-legend__swatch cal-legend__swatch--lv1"></span>1〜69%</span>
         <span class="cal-legend__item"><span class="cal-legend__swatch"></span>記録なし</span>
+      </div>
+      <div class="pr-section" id="personal-records" aria-label="自己ベスト一覧">
+        <h2 class="pr-section__title">🏆 自己ベスト（レコーズ）</h2>
+        <p class="pr-section__intro">全期間のトレーニング記録から、種目ごとの最高重量（kg）を自動集計しています。</p>
       </div>
     </section>
   </div>
@@ -2898,6 +3002,140 @@
         return w % 1 === 0 ? String(w) : w.toFixed(1);
       }
 
+      function getExercisePartKey(exerciseId) {
+        for (var i = 0; i < WORKOUT_PARTS.length; i++) {
+          var pk = WORKOUT_PARTS[i];
+          var list = getPartExercises(pk);
+          for (var j = 0; j < list.length; j++) {
+            if (list[j].id === exerciseId) return pk;
+          }
+        }
+        return null;
+      }
+
+      function getExerciseDisplayName(exerciseId) {
+        if (exMap[exerciseId]) return exMap[exerciseId].name;
+        return exerciseId.replace(/-/g, " ");
+      }
+
+      function scanPersonalRecords() {
+        var records = {};
+        if (!state.logs) return records;
+        Object.keys(state.logs).forEach(function (dateKey) {
+          if (!state.logs[dateKey] || typeof state.logs[dateKey] !== "object") return;
+          Object.keys(state.logs[dateKey]).forEach(function (exerciseId) {
+            var entry = state.logs[dateKey][exerciseId];
+            if (!entry || !entry.sets) return;
+            entry.sets.forEach(function (set) {
+              var weight = typeof roundWeight === "function"
+                ? roundWeight(Number(set.weight) || 0)
+                : (Number(set.weight) || 0);
+              if (weight <= 0) return;
+              if (!records[exerciseId] || weight > records[exerciseId].weight) {
+                records[exerciseId] = { weight: weight, date: dateKey };
+              }
+            });
+          });
+        });
+        return records;
+      }
+
+      function buildPersonalRecordsGrouped() {
+        var records = scanPersonalRecords();
+        var grouped = {};
+        var other = [];
+
+        Object.keys(records).forEach(function (exerciseId) {
+          var rec = records[exerciseId];
+          var item = {
+            id: exerciseId,
+            name: getExerciseDisplayName(exerciseId),
+            weight: rec.weight,
+            date: rec.date
+          };
+          var partKey = getExercisePartKey(exerciseId);
+          if (partKey) {
+            if (!grouped[partKey]) grouped[partKey] = [];
+            grouped[partKey].push(item);
+          } else {
+            other.push(item);
+          }
+        });
+
+        WORKOUT_PARTS.forEach(function (pk) {
+          if (grouped[pk]) {
+            grouped[pk].sort(function (a, b) {
+              return a.name.localeCompare(b.name, "ja");
+            });
+          }
+        });
+        other.sort(function (a, b) { return a.name.localeCompare(b.name, "ja"); });
+
+        return { grouped: grouped, other: other };
+      }
+
+      function renderPersonalRecords() {
+        var section = document.getElementById("personal-records");
+        if (!section) return;
+
+        var titleHtml =
+          '<h2 class="pr-section__title">🏆 自己ベスト（レコーズ）</h2>' +
+          '<p class="pr-section__intro">全期間のトレーニング記録から、種目ごとの最高重量（kg）を自動集計しています。</p>';
+
+        var data = buildPersonalRecordsGrouped();
+        var hasAny = false;
+        var today = todayKey();
+        var bodyHtml = "";
+
+        WORKOUT_PARTS.forEach(function (pk) {
+          var items = data.grouped[pk];
+          if (!items || !items.length) return;
+          hasAny = true;
+          bodyHtml += '<div class="pr-part">';
+          bodyHtml += '<div class="pr-part__head">' + PARTS[pk].emoji + " " + PARTS[pk].name + "</div>";
+          bodyHtml += '<div class="pr-list">';
+          items.forEach(function (item) {
+            var isToday = item.date === today;
+            bodyHtml +=
+              '<div class="pr-row' + (isToday ? " is-today" : "") + '">' +
+                '<span class="pr-row__name">' + escapeHtml(item.name) +
+                  (isToday ? '<span class="pr-row__badge">NEW</span>' : "") +
+                "</span>" +
+                '<span class="pr-row__weight">' + formatWeight(item.weight) + "kg</span>" +
+              "</div>";
+          });
+          bodyHtml += "</div></div>";
+        });
+
+        if (data.other.length) {
+          hasAny = true;
+          bodyHtml += '<div class="pr-part">';
+          bodyHtml += '<div class="pr-part__head">📋 その他の記録</div>';
+          bodyHtml += '<div class="pr-list">';
+          data.other.forEach(function (item) {
+            var isToday = item.date === today;
+            bodyHtml +=
+              '<div class="pr-row' + (isToday ? " is-today" : "") + '">' +
+                '<span class="pr-row__name">' + escapeHtml(item.name) +
+                  (isToday ? '<span class="pr-row__badge">NEW</span>' : "") +
+                "</span>" +
+                '<span class="pr-row__weight">' + formatWeight(item.weight) + "kg</span>" +
+              "</div>";
+          });
+          bodyHtml += "</div></div>";
+        }
+
+        if (!hasAny) {
+          bodyHtml =
+            '<div class="pr-empty">' +
+              "まだ重量記録がありません。<br>" +
+              "「今日」タブでトレーニングを記録すると、ここに自己ベストが表示されます。" +
+            "</div>";
+        }
+
+        section.innerHTML = titleHtml + bodyHtml;
+      }
+
       function formatSetSummary(set, exercise) {
         var unit = exercise.timed ? "秒" : "回";
         if (exercise.bodyweight || set.weight === 0) {
@@ -3221,6 +3459,7 @@
 
       function refreshUI() {
         renderToday();
+        renderPersonalRecords();
       }
 
       /* ── Completion celebration ── */
@@ -3346,6 +3585,7 @@
         }
 
         grid.innerHTML = html;
+        renderPersonalRecords();
       }
 
       function changeCalendarMonth(delta) {
@@ -3557,6 +3797,7 @@
           hideCompleteModal();
           saveData();
           renderToday();
+          renderPersonalRecords();
           showToast("今日の記録をリセットしました");
         } else {
           showToast("リセットする記録はありません");

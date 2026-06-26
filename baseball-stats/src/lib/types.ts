@@ -1,0 +1,58 @@
+/** ???? */
+export type AtBatResult =
+  | "single"
+  | "double"
+  | "triple"
+  | "homeRun"
+  | "walk"
+  | "out"
+  | "strikeout";
+
+/** ???? */
+export type RoleType = "batter" | "pitcher" | "both";
+
+/** 1???????? */
+export interface PitchingStats {
+  /** ?????????? */
+  innings: number;
+  /** ???????0?2? */
+  outs: number;
+  hitsAllowed: number;
+  walksAllowed: number;
+  strikeouts: number;
+  runsAllowed: number;
+  earnedRuns: number;
+}
+
+/** 1???????? */
+export interface BattingStats {
+  atBats: AtBatResult[];
+  /** ??????????? */
+  rbi: number;
+}
+
+/** ?????????? */
+export interface GameRecord {
+  id: string;
+  date: string;
+  opponent: string;
+  role: RoleType;
+  batting?: BattingStats;
+  pitching?: PitchingStats;
+}
+
+export const AT_BAT_RESULT_LABELS: Record<AtBatResult, string> = {
+  single: "??",
+  double: "???",
+  triple: "???",
+  homeRun: "???",
+  walk: "???",
+  out: "??",
+  strikeout: "??",
+};
+
+export const ROLE_LABELS: Record<RoleType, string> = {
+  batter: "???????",
+  pitcher: "???????",
+  both: "???????",
+};

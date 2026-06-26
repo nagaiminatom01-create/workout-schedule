@@ -22,6 +22,13 @@ export default function HomePage() {
         いますぐプレイ
       </Link>
 
+      <Link
+        href="/stats"
+        className="mt-4 rounded-xl border border-emerald-700/50 bg-emerald-950/30 px-8 py-3 text-base font-semibold text-emerald-300 transition hover:border-emerald-600 hover:bg-emerald-950/50"
+      >
+        野球成績記録を開く
+      </Link>
+
       <section className="mt-16 grid w-full gap-6 text-sm text-zinc-400 md:grid-cols-3">
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
           <h2 className="mb-2 font-semibold text-white">毎回ちがう迷路</h2>

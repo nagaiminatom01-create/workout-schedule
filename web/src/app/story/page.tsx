@@ -9,12 +9,15 @@ type Item = {
   emoji: string;
 };
 
+type ChoiceKind = "normal" | "instantDeath" | "confession" | "sing";
+
 type Choice = {
   action: string;
-  reaction: string;
+  dialogue: string;
   pulseDelta?: number;
   pulseSetTo?: number;
   item?: Item;
+  kind: ChoiceKind;
   nextStepId: string | null;
 };
 
@@ -34,7 +37,7 @@ type PendingResult = {
   gainedItem: Item | null;
 };
 
-// ── 実話ベース・全4ステージ ─────────────────────────
+// ── ストーリーデータ（全4ステージ） ───────────────────
 const STORY: Record<string, StoryStep> = {
   stage1: {
     id: "stage1",
@@ -44,23 +47,25 @@ const STORY: Record<string, StoryStep> = {
     choices: [
       {
         action: "メロメロな気持ちを抑え、1週間後に男らしくサシ飲みに誘う",
-        reaction: "なつき「待ってたよ！」と大喜び！",
+        dialogue: "あきとくん、誘ってくれてありがとう！待ってたよ！",
         pulseDelta: 25,
         item: { id: "promise", name: "1週間後の約束", emoji: "📅" },
+        kind: "normal",
         nextStepId: "stage2",
       },
       {
         action: "嬉しすぎてその場でB'zの『ultra soul』を熱唱して荒ぶる",
-        reaction:
-          "なつき「あきとくん面白い人だなあ笑」とウケるがデートの約束はできず。",
+        dialogue: "あきとくん面白い人だなあ笑！ウルトラソウル最高！",
         pulseDelta: 10,
+        kind: "normal",
         nextStepId: "stage2",
       },
       {
         action:
           "照れ隠しで急にクールぶって、平成ヘアーをいじりながらスルーする",
-        reaction: "なつき「あれ、勘違いだったかな…」とテンションが下がる。",
+        dialogue: "あれ、あんまり話したくなかったのかな…？（勘違いだったかも）",
         pulseDelta: -15,
+        kind: "normal",
         nextStepId: "stage2",
       },
     ],
@@ -73,24 +78,25 @@ const STORY: Record<string, StoryStep> = {
     choices: [
       {
         action: "「このあと、ホテル行かない？」とストレートに提案する",
-        reaction:
-          "なつき「うーん、3件目以降ならいいよ❤️」と極上の焦らしテク！晃人のボルテージはMAXに！",
+        dialogue: "うーん、まだ2件目だし…3件目以降ならいいよ❤️（焦らし）",
         pulseDelta: 20,
+        kind: "normal",
         nextStepId: "stage3",
       },
       {
         action:
           "チキってGLAYの『HOWEVER』の歌詞みたいに「言葉では言えない」と黙り込む",
-        reaction:
-          "なつき「急にどうしたの？笑」と、雰囲気がただただシリアスになる。",
+        dialogue: "急に黙ってどうしたの？笑。なんかシリアスだね…",
         pulseDelta: 5,
+        kind: "normal",
         nextStepId: "stage3",
       },
       {
         action: "緊張のあまり、北谷の実家の話を延々とし始めて朝を迎える",
-        reaction:
-          "北谷の実家トークが止まらず気付けば朝。なつき「楽しかったけど、眠いから帰るね…」",
+        dialogue:
+          "あきとくんの実家の話おもしろかった！けどもう朝だし眠いから帰るね…",
         pulseSetTo: 0,
+        kind: "instantDeath",
         nextStepId: null,
       },
     ],
@@ -103,16 +109,17 @@ const STORY: Record<string, StoryStep> = {
     choices: [
       {
         action: "男・北谷晃人、なつきさんの期待に応えて「しっかりする」！！！",
-        reaction:
-          "なつき「あきとくん、かっこよかったよ…❤️」二人の距離は限界を突破！",
+        dialogue: "あきとくん、すっごくかっこよかったよ…❤️",
         pulseDelta: 35,
         item: { id: "memory", name: "しっかりした思い出", emoji: "✨" },
+        kind: "normal",
         nextStepId: "stage4",
       },
       {
         action: "ホテルに着いた瞬間、緊張と安心感でベッドで爆睡する",
-        reaction: "なつき「え、寝ちゃうんかい！」と激しいツッコミが入る。",
+        dialogue: "え、着いた瞬間寝ちゃうんかい！笑",
         pulseDelta: -20,
+        kind: "normal",
         nextStepId: "stage4",
       },
     ],
@@ -126,15 +133,17 @@ const STORY: Record<string, StoryStep> = {
       {
         action:
           "なつきの手を握り、「覚えててくれたんだ…そんな健気ななつきが本当に好きさあ。俺の彼女になってほしい」と真っ直ぐ告白する",
-        reaction: "なつき「うん！私もあきとくんが好き。よろしくね！」",
+        dialogue: "うん！私もあきとくんが好き。よろしくね！",
         pulseDelta: 40,
+        kind: "confession",
         nextStepId: null,
       },
       {
         action:
           "嬉しすぎてJanne Da Arcの『月光花』のサビを夜の海に向かって熱唱する",
-        reaction: "なつき「ちょっと！歌ってごまかさないでよ〜！笑」",
+        dialogue: "ちょっと！歌ってごまかさないでよ〜！笑",
         pulseDelta: 15,
+        kind: "sing",
         nextStepId: null,
       },
     ],
@@ -145,17 +154,21 @@ const INITIAL_PULSE = 50;
 const START_STEP = "stage1";
 
 // ── 脈あり度計算 ────────────────────────────────────
-function clampPulse(value: number) {
+function clampPulse(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
 
-function resolvePulse(choice: Choice, current: number, stepId: string) {
+function resolvePulse(
+  choice: Choice,
+  current: number,
+  stepId: string,
+): number {
   let next =
     choice.pulseSetTo !== undefined
       ? choice.pulseSetTo
       : current + (choice.pulseDelta ?? 0);
 
-  // ステージ4以外では99%上限（告白ステージで100%到達のクライマックスを保証）
+  // ステージ1〜3は99%上限。100%はステージ4の告白成功でのみ到達
   if (stepId !== "stage4" && next >= 100) {
     next = 99;
   }
@@ -163,17 +176,24 @@ function resolvePulse(choice: Choice, current: number, stepId: string) {
   return clampPulse(next);
 }
 
-function formatPulseEffect(
+function buildEffectText(
   choice: Choice,
   before: number,
   after: number,
 ): string {
-  if (choice.pulseSetTo !== undefined) {
+  if (choice.kind === "instantDeath") {
     return "脈あり度 0%（即ゲームオーバー）";
   }
   const delta = choice.pulseDelta ?? 0;
   const sign = delta > 0 ? "+" : "";
-  return `脈あり度 ${sign}${delta}（${before}% → ${after}%）`;
+  let text = `脈あり度 ${sign}${delta}（${before}% → ${after}%）`;
+  if (choice.kind === "confession" && after >= 100) {
+    text += " ➡️ 100%到達！";
+  }
+  if (choice.kind === "sing") {
+    text += " ➡️ 100%未満";
+  }
+  return text;
 }
 
 // ── メインコンポーネント ──────────────────────────────
@@ -192,33 +212,26 @@ export default function StoryPage() {
       choice.item && !items.some((i) => i.id === choice.item!.id)
         ? choice.item
         : null;
-
     setPending({ choice, newPulse, gainedItem });
   };
 
-  const confirmResult = () => {
+  const handleNext = () => {
     if (!pending) return;
 
     const { choice, newPulse, gainedItem } = pending;
     setPulse(newPulse);
-
-    if (gainedItem) {
-      setItems((prev) => [...prev, gainedItem]);
-    }
-
+    if (gainedItem) setItems((prev) => [...prev, gainedItem]);
     setPending(null);
 
-    // 即ゲームオーバー（0%）
     if (newPulse <= 0) {
       setPhase("failure");
       return;
     }
 
-    // ステージ4終了時のエンディング分岐
-    // A（告白）かつ100%到達 → ハッピーエンド / B（熱唱）または100%未満 → 惜しいエンド
     if (currentStepId === "stage4") {
-      const isConfession = choice.pulseDelta === 40;
-      setPhase(isConfession && newPulse >= 100 ? "success" : "continue");
+      setPhase(
+        choice.kind === "confession" && newPulse >= 100 ? "success" : "continue",
+      );
       return;
     }
 
@@ -235,24 +248,24 @@ export default function StoryPage() {
     setPending(null);
   };
 
-  const pulseColor =
+  const pulseBarColor =
     pulse >= 70
       ? "from-rose-400 to-pink-500"
       : pulse >= 40
         ? "from-pink-300 to-rose-400"
         : "from-slate-300 to-rose-300";
 
-  // ── エンディング画面 ──
+  // ── エンディング ──
   if (phase === "success") {
     return (
       <EndingScreen
+        theme="success"
         title="ハッピーエンド！"
         message="おめでとう！なつきさんの好意から始まり、3件目の約束を経て、Janne Da Arcの伏線回収で見事ゴールイン！現実でも早く付き合っちゃえ！"
         pulse={pulse}
         items={items}
-        onRestart={handleRestart}
-        theme="success"
         restartLabel="もう一度物語を楽しむ"
+        onRestart={handleRestart}
       />
     );
   }
@@ -260,13 +273,13 @@ export default function StoryPage() {
   if (phase === "failure") {
     return (
       <EndingScreen
+        theme="failure"
         title="ゲームオーバー"
         message="友達止まり…頭の中でB'zの『LOVE PHANTOM』が切なく流れています（幻の命が弾けた…）。"
         pulse={pulse}
         items={items}
-        onRestart={handleRestart}
-        theme="failure"
         restartLabel="1回目の飲み会からやり直す"
+        onRestart={handleRestart}
       />
     );
   }
@@ -274,24 +287,25 @@ export default function StoryPage() {
   if (phase === "continue") {
     return (
       <EndingScreen
+        theme="continue"
         title="惜しいエンド…"
         message="あと一歩！なつきちゃんは告白を待っています！全問正解のルートを見つけて、もう一度北谷の風を起こそう！"
         pulse={pulse}
         items={items}
+        restartLabel="リトライ"
         onRestart={handleRestart}
-        theme="continue"
-        restartLabel="もう一度チャレンジ"
       />
     );
   }
 
-  // ── メインゲーム画面 ──
+  // ── ゲーム画面 ──
   return (
-    <main className="relative min-h-screen bg-gradient-to-b from-rose-50 via-pink-50 to-white">
+    <main className="relative min-h-screen bg-gradient-to-b from-rose-100 via-pink-50 to-white">
       <div className="mx-auto max-w-lg px-4 py-6">
+        {/* ヘッダー */}
         <header className="mb-6 text-center">
-          <p className="mb-1 text-xs tracking-widest text-rose-400 uppercase">
-            Real Love Story
+          <p className="mb-1 flex items-center justify-center gap-1 text-xs tracking-widest text-rose-400 uppercase">
+            <span aria-hidden>💗</span> Love Story Game
           </p>
           <h1 className="text-2xl font-bold text-rose-700">
             北谷晃人 × 島田なつき
@@ -300,30 +314,28 @@ export default function StoryPage() {
         </header>
 
         {/* 脈あり度ゲージ */}
-        <section className="mb-5 rounded-2xl border border-rose-100 bg-white/80 p-4 shadow-sm backdrop-blur">
+        <section className="mb-4 rounded-2xl border border-rose-100 bg-white/90 p-4 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
             <span className="flex items-center gap-1.5 text-sm font-semibold text-rose-600">
-              <span aria-hidden>💗</span>
-              脈あり度
+              <span aria-hidden>💗</span> 脈あり度
             </span>
-            <span className="text-lg font-bold text-rose-600">{pulse}%</span>
+            <span className="text-xl font-bold text-rose-600">{pulse}%</span>
           </div>
           <div className="h-4 overflow-hidden rounded-full bg-rose-100">
             <div
-              className={`h-full rounded-full bg-gradient-to-r ${pulseColor} transition-all duration-700 ease-out`}
+              className={`h-full rounded-full bg-gradient-to-r ${pulseBarColor} transition-all duration-700 ease-out`}
               style={{ width: `${pulse}%` }}
             />
           </div>
           <p className="mt-2 text-center text-xs text-rose-400">
-            100%でハッピーエンド / 0%で即ゲームオーバー
+            💕 100%でハッピーエンド / 💔 0%で即ゲームオーバー
           </p>
         </section>
 
-        {/* アイテムコレクション */}
-        <section className="mb-5 rounded-2xl border border-rose-100 bg-white/80 p-4 shadow-sm backdrop-blur">
+        {/* コレクション */}
+        <section className="mb-4 rounded-2xl border border-rose-100 bg-white/90 p-4 shadow-sm">
           <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-rose-600">
-            <span aria-hidden>🎁</span>
-            コレクション
+            <span aria-hidden>🎁</span> コレクション
           </h2>
           {items.length === 0 ? (
             <p className="text-center text-xs text-rose-300">
@@ -344,10 +356,10 @@ export default function StoryPage() {
           )}
         </section>
 
-        {/* ストーリー本文 */}
-        <section className="mb-5 rounded-2xl border border-rose-100 bg-white p-5 shadow-sm">
+        {/* ストーリー */}
+        <section className="mb-4 rounded-2xl border border-rose-100 bg-white p-5 shadow-sm">
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-medium text-rose-500">
+            <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-bold text-rose-500">
               STAGE {currentStep.stage}
             </span>
             <span className="text-xs font-medium text-rose-400">
@@ -361,16 +373,16 @@ export default function StoryPage() {
 
         {/* 選択肢 */}
         <section className="flex flex-col gap-3">
-          {currentStep.choices.map((choice, index) => (
+          {currentStep.choices.map((choice, i) => (
             <button
-              key={index}
+              key={i}
               type="button"
               disabled={!!pending}
               onClick={() => handleChoice(choice)}
-              className="group rounded-2xl border border-rose-200 bg-white px-5 py-4 text-left text-sm text-rose-800 shadow-sm transition hover:border-rose-300 hover:bg-rose-50 hover:shadow-md active:scale-[0.98] disabled:opacity-50"
+              className="rounded-2xl border border-rose-200 bg-white px-5 py-4 text-left text-sm text-rose-800 shadow-sm transition hover:border-rose-300 hover:bg-rose-50 hover:shadow-md active:scale-[0.98] disabled:opacity-50"
             >
               <span className="mr-2 font-bold text-rose-400">
-                {String.fromCharCode(65 + index)}.
+                {String.fromCharCode(65 + i)}.
               </span>
               {choice.action}
             </button>
@@ -382,18 +394,18 @@ export default function StoryPage() {
       {pending && (
         <ReactionDialog
           action={pending.choice.action}
-          reaction={pending.choice.reaction}
-          pulseEffect={formatPulseEffect(
-            pending.choice,
-            pulse,
-            pending.newPulse,
-          )}
+          dialogue={pending.choice.dialogue}
+          effectText={buildEffectText(pending.choice, pulse, pending.newPulse)}
           gainedItem={pending.gainedItem}
           isGameOver={pending.newPulse <= 0}
-          isFinalStage={currentStepId === "stage4"}
-          isConfession={pending.choice.pulseDelta === 40}
-          newPulse={pending.newPulse}
-          onConfirm={confirmResult}
+          isHappyEnd={
+            pending.choice.kind === "confession" && pending.newPulse >= 100
+          }
+          isCloseEnd={
+            currentStepId === "stage4" &&
+            !(pending.choice.kind === "confession" && pending.newPulse >= 100)
+          }
+          onNext={handleNext}
         />
       )}
     </main>
@@ -403,52 +415,48 @@ export default function StoryPage() {
 // ── リアクションダイアログ ────────────────────────────
 function ReactionDialog({
   action,
-  reaction,
-  pulseEffect,
+  dialogue,
+  effectText,
   gainedItem,
   isGameOver,
-  isFinalStage,
-  isConfession,
-  newPulse,
-  onConfirm,
+  isHappyEnd,
+  isCloseEnd,
+  onNext,
 }: {
   action: string;
-  reaction: string;
-  pulseEffect: string;
+  dialogue: string;
+  effectText: string;
   gainedItem: Item | null;
   isGameOver: boolean;
-  isFinalStage: boolean;
-  isConfession: boolean;
-  newPulse: number;
-  onConfirm: () => void;
+  isHappyEnd: boolean;
+  isCloseEnd: boolean;
+  onNext: () => void;
 }) {
-  const willHappyEnd = isFinalStage && isConfession && newPulse >= 100;
-  const willCloseEnd = isFinalStage && !willHappyEnd;
-
-  const confirmLabel = isGameOver
+  const nextLabel = isGameOver
     ? "……（ゲームオーバー）"
-    : willHappyEnd
+    : isHappyEnd
       ? "ハッピーエンドへ！"
-      : willCloseEnd
+      : isCloseEnd
         ? "惜しいエンドへ…"
-        : "次へ進む";
+        : "次へ";
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 backdrop-blur-sm sm:items-center">
       <div
         role="dialog"
         aria-modal="true"
+        aria-label="なつきのリアクション"
         className="w-full max-w-lg animate-[fadeUp_0.3s_ease-out] rounded-3xl border border-rose-200 bg-white p-6 shadow-2xl"
       >
         {/* 晃人の行動 */}
         <div className="mb-4 rounded-2xl bg-slate-50 px-4 py-3">
           <p className="mb-1 text-xs font-semibold text-slate-400">
-            晃人の行動
+            💙 晃人の行動
           </p>
           <p className="text-sm leading-relaxed text-slate-700">{action}</p>
         </div>
 
-        {/* なつきのリアクション */}
+        {/* なつきのセリフ */}
         <div className="mb-4 flex gap-3">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-100 text-lg"
@@ -457,8 +465,12 @@ function ReactionDialog({
             🌸
           </div>
           <div className="flex-1 rounded-2xl rounded-tl-sm border border-rose-100 bg-rose-50 px-4 py-3">
-            <p className="mb-1 text-xs font-semibold text-rose-500">なつき</p>
-            <p className="text-sm leading-relaxed text-rose-800">{reaction}</p>
+            <p className="mb-1 text-xs font-semibold text-rose-500">
+              💬 なつき
+            </p>
+            <p className="text-sm leading-relaxed text-rose-800">
+              「{dialogue}」
+            </p>
           </div>
         </div>
 
@@ -467,35 +479,35 @@ function ReactionDialog({
           className={`mb-5 rounded-xl px-4 py-3 text-center text-xs font-medium ${
             isGameOver
               ? "bg-slate-800 text-rose-200"
-              : newPulse >= 100 && isFinalStage
+              : isHappyEnd
                 ? "bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700"
-                : "bg-rose-100/60 text-rose-600"
+                : "bg-rose-100/70 text-rose-600"
           }`}
         >
-          <p>{pulseEffect}</p>
+          <p>{effectText}</p>
           {gainedItem && (
-            <p className="mt-1">
+            <p className="mt-1.5">
               {gainedItem.emoji} アイテム「{gainedItem.name}」獲得！
             </p>
           )}
-          {willHappyEnd && (
-            <p className="mt-1 font-bold">➡️ 100%到達でハッピーエンド！</p>
+          {isHappyEnd && (
+            <p className="mt-1.5 font-bold">➡️ ハッピーエンドへ！</p>
           )}
-          {willCloseEnd && !isGameOver && (
-            <p className="mt-1">➡️ 100%未満のため惜しいエンドへ</p>
+          {isCloseEnd && !isGameOver && (
+            <p className="mt-1.5">➡️ 100%未満のため惜しいエンドへ</p>
           )}
         </div>
 
         <button
           type="button"
-          onClick={onConfirm}
-          className={`w-full rounded-2xl px-6 py-3 text-sm font-bold text-white shadow-md transition active:scale-95 ${
+          onClick={onNext}
+          className={`w-full rounded-2xl px-6 py-3.5 text-sm font-bold text-white shadow-md transition active:scale-95 ${
             isGameOver
               ? "bg-slate-700 hover:bg-slate-800"
               : "bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600"
           }`}
         >
-          {confirmLabel}
+          {nextLabel}
         </button>
       </div>
     </div>
@@ -504,21 +516,21 @@ function ReactionDialog({
 
 // ── エンディング画面 ──────────────────────────────────
 function EndingScreen({
+  theme,
   title,
   message,
   pulse,
   items,
-  onRestart,
-  theme,
   restartLabel,
+  onRestart,
 }: {
+  theme: "success" | "failure" | "continue";
   title: string;
   message: string;
   pulse: number;
   items: Item[];
-  onRestart: () => void;
-  theme: "success" | "failure" | "continue";
   restartLabel: string;
+  onRestart: () => void;
 }) {
   if (theme === "success") {
     return (
@@ -530,8 +542,8 @@ function EndingScreen({
           </p>
           <div className="mb-4 flex justify-center gap-2 text-2xl" aria-hidden>
             <span className="animate-bounce">💖</span>
-            <span className="animate-bounce [animation-delay:0.15s]">💗</span>
-            <span className="animate-bounce [animation-delay:0.3s]">💕</span>
+            <span className="animate-bounce [animation-delay:150ms]">💗</span>
+            <span className="animate-bounce [animation-delay:300ms]">💕</span>
           </div>
           <h2 className="mb-4 text-3xl font-bold text-rose-600">{title}</h2>
           <p className="mb-6 text-base leading-relaxed font-medium text-rose-800">
@@ -553,7 +565,7 @@ function EndingScreen({
   if (theme === "failure") {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black px-4 py-10">
-        <div className="w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900/90 p-8 text-center shadow-2xl">
+        <div className="w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900/95 p-8 text-center shadow-2xl">
           <p className="mb-4 text-5xl" aria-hidden>
             🎵
           </p>
@@ -620,7 +632,9 @@ function EndingStats({
       </div>
       {items.length > 0 && (
         <div className="mb-6">
-          <p className={`mb-2 text-xs ${dark ? "text-slate-500" : "text-rose-400"}`}>
+          <p
+            className={`mb-2 text-xs ${dark ? "text-slate-500" : "text-rose-400"}`}
+          >
             獲得アイテム
           </p>
           <ul className="flex flex-wrap justify-center gap-2">
@@ -646,8 +660,11 @@ function EndingStats({
 function HeartRain() {
   const hearts = ["💕", "💖", "💗", "💓", "💘", "❤️"];
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      {Array.from({ length: 18 }).map((_, i) => (
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden
+    >
+      {Array.from({ length: 20 }).map((_, i) => (
         <span
           key={i}
           className="absolute animate-[fall_4s_linear_infinite] text-xl opacity-60"
